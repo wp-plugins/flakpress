@@ -141,15 +141,27 @@ function flaker_c_insert_code($html) {
 }
 
 function flaker_c_init_header() {
+
   if(!is_feed() && get_option('flaker_c_is_active') && (!get_option('flaker_c_singlemode') || is_singular())) {  
 	$url = get_bloginfo('wpurl');
-	echo '<!-- Flaker Plugin -->' . "\n";
-//	echo '<script src="'. $url .'/wp-content/plugins/flaker/flaker.blog.js" type="text/javascript"></script>' . "\n";
-//	echo '<script src="'. $url .'/wp-content/plugins/flaker/flaker.blog.css" type="text/javascript"></script>' . "\n";
-
-	echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>' . "\n";
+	$debug = get_option('flaker_c_debug');
+	$path = "/wp-content/plugins/flakpress/";
+	
+echo '<!-- Flaker Plugin -->' . "\n";
+echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>' . "\n";
+	
+if($_SERVER["HTTP_HOST"] == "wp.flaker.pl"){
+	
 	echo '<script src="http://staging.flaker.pl/static/js/flaker/flaker.blog.js" type="text/javascript"></script>' . "\n";
-	echo '<link rel="stylesheet" href="http://staging.flaker.pl/static/css/flaker/widgets.css" type="text/css" />' . "\n";
+	echo '<link href="http://staging.flaker.pl/static/css/flaker/widgets.css" rel="stylesheet" type="text/css" media="screen" />' . "\n";
+
+}else{
+
+	echo '<script src="'.$url.$path.'flaker.blog.js" type="text/javascript"></script>' . "\n";
+	echo '<link href="'.$url.$path.'widgets.css" rel="stylesheet" type="text/css" media="screen" />' . "\n";
+
+}
+	
   echo '<!-- end Flaker Plugin -->' . "\n";
   }
 }
