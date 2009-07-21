@@ -2,9 +2,9 @@
 Contributors: Dominique Stranz, Adam Zygadlewicz
 Donate link: http://flaker.pl/
 Tags: comments, share
-Requires at least: 2.0.2
-Tested up to: 2.8.1
-Stable tag: 0.11
+Requires at least: 2.7.1
+Tested up to: 2.8.2
+Stable tag: 1.0
 
 Flakpress enables displaying related comments from flaker.pl website.
 

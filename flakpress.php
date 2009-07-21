@@ -19,21 +19,21 @@ function flaker_c_start() {
 
 	// Menu
 	add_action('admin_menu', 'flaker_c_menu');
-
+  
 	if(get_option('flaker_c_is_active')){
-	  // Załaczanie plików js
-	  add_action('wp_head', 'flaker_c_init_header');
-    
-    if(get_option('flaker_c_comments_position') == 'replace'){
-      add_filter("comments_template","flaker_c_disiable_wp_comments");
-    }
-    
-    if(get_option('flaker_c_comments_position') == 'under'){
-      //tego też nie
-    } else {
-	    // Wyświetlanie ogłoszeń pod wpisami, nad komciami
-		  add_filter('the_content', 'flaker_c_insert_code');
-	  }
+		// Załaczanie plików js
+		add_action('wp_head', 'flaker_c_init_header');
+
+		if(get_option('flaker_c_comments_position') == 'replace'){
+			add_filter("comments_template","flaker_c_disable_wp_comments");
+		}
+
+		if(get_option('flaker_c_comments_position') == 'under'){
+			//tego też nie
+		} else {
+		// Wyświetlanie ogłoszeń pod wpisami, nad komciami
+			add_filter('the_content', 'flaker_c_insert_code');
+		}
 	}
 
 }
@@ -46,7 +46,7 @@ function flaker_c_json_encode($arr){
 	}
 }
 
-function flaker_c_disiable_wp_comments(){
+function flaker_c_disable_wp_comments(){
  return ABSPATH . "wp-content/plugins/flakpress/blank.php";
 }
 
@@ -63,11 +63,15 @@ function flaker_c_set_options() {
 	add_option('flaker_c_debug', 0);
 	
 	add_option('flaker_c_comments_position','above');
-	add_option('flaker_c_heigth','auto');
+	add_option('flaker_c_height','auto');
 	add_option('flaker_c_bg','#fff');
 	add_option('flaker_c_anonim',1);
 	
 	add_option('flaker_c_sort','asc');
+	
+	add_option('flaker_c_singlemode', 1);
+	
+	add_option('flaker_c_border','auto');
 }
 
 // Kasowanie zmiennych
@@ -83,11 +87,15 @@ function flaker_c_unset_options() {
 	delete_option('flaker_c_debug');
 	
 	delete_option('flaker_c_comments_position');
-	delete_option('flaker_c_heigth');
+	delete_option('flaker_c_height');
 	delete_option('flaker_c_bg');
 	delete_option('flaker_c_anonim');
 
 	delete_option('flaker_c_sort');
+	
+	delete_option('flaker_c_singlemode');
+	
+	delete_option('flaker_c_border');
 }
 
 function _flaker_read_options($list = array()){
@@ -101,16 +109,19 @@ function _flaker_read_options($list = array()){
 function flaker_c_insert_code($html) {
   global $post;
   #var_dump($post);
-  if(!is_feed() && get_option('flaker_c_is_active') && !empty($post)) {  
+  if(!is_feed() && get_option('flaker_c_is_active') && !empty($post) && (!get_option('flaker_c_singlemode') || is_singular())) {  
     $conf = _flaker_read_options(array("form_add","show_visits","form_width","show_favs","show_comments",
                                         "show_reactions","show_flaker_button","debug","comments_position",
-                                        "height","bg","anonim","sort"));
+                                        "height","bg","anonim","sort","singlemode","border"));
                                         
+    if(empty($conf["height"])){
+     $conf["height"] = "auto";
+    }                                  
     if(!empty($post->post_title)){
       $conf["title"] = $post->post_title;
     }
-    if(!empty($post->guid)){
-      $conf["url"] = $post->guid;
+    if(!empty($post->ID)){
+      $conf["url"] = get_permalink($post->ID);
     }
   
     $conf["target"] = "#flaker_c_container_".$post->ID;
@@ -130,6 +141,7 @@ function flaker_c_insert_code($html) {
 }
 
 function flaker_c_init_header() {
+  if(!is_feed() && get_option('flaker_c_is_active') && (!get_option('flaker_c_singlemode') || is_singular())) {  
 	$url = get_bloginfo('wpurl');
 	echo '<!-- Flaker Plugin -->' . "\n";
 //	echo '<script src="'. $url .'/wp-content/plugins/flaker/flaker.blog.js" type="text/javascript"></script>' . "\n";
@@ -138,9 +150,8 @@ function flaker_c_init_header() {
 	echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>' . "\n";
 	echo '<script src="http://staging.flaker.pl/static/js/flaker/flaker.blog.js" type="text/javascript"></script>' . "\n";
 	echo '<link rel="stylesheet" href="http://staging.flaker.pl/static/css/flaker/widgets.css" type="text/css" />' . "\n";
-
-
   echo '<!-- end Flaker Plugin -->' . "\n";
+  }
 }
 
 // Menu flaker'a
@@ -173,11 +184,15 @@ function flaker_c_settings_page() {
     _flaker_c_update_settings("flaker_c_debug");
     _flaker_c_update_settings("flaker_c_comments_position",false);
   
-    _flaker_c_update_settings("flaker_c_heigth",false);
+    _flaker_c_update_settings("flaker_c_height",false);
     _flaker_c_update_settings("flaker_c_bg",false);
     _flaker_c_update_settings("flaker_c_anonim");
 	
-	_flaker_c_update_settings("flaker_c_sort",false);
+	  _flaker_c_update_settings("flaker_c_sort",false);
+	
+	  _flaker_c_update_settings("flaker_c_singlemode");
+	   
+	  _flaker_c_update_settings("flaker_c_border",false);
   }
 
 	
@@ -216,13 +231,14 @@ function flaker_c_settings_page() {
 	
 	$html .= '<tr><th scope="row"><label for="flaker_c_comments_position">Pokazywać reakcje:</label></th>'; 
 	$html .= '<td><select type="text" id="flaker_c_comments_position" name="flaker_c_comments_position">
-	                <option value="above" '.(get_option('flaker_c_comments_position')=='above'?'selected="selected"':'').'>nad komentarzami z WP</option>
-	                <option value="under" '.(get_option('flaker_c_comments_position')=='under'?'selected="selected"':'').'>pod komentarzami z WP</option>
-	                <option value="replace" '.(get_option('flaker_c_comments_position')=='replace'?'selected="selected"':'').'>zamiast komentarzy z WP</option>
+	                <option value="above" '.(get_option('flaker_c_comments_position')=='above'?'selected="selected"':'').'>nad komentarzami z WP</option>'
+	                .'<option value="replace" '.(get_option('flaker_c_comments_position')=='replace'?'selected="selected"':'').'>zamiast komentarzy z WP</option>
 	              </select></td><tr>';
+	              
+	  	                #'.<option value="under" '.(get_option('flaker_c_comments_position')=='under'?'selected="selected"':'').'>pod komentarzami z WP</option>'
 	
-	$html .= '<tr><th scope="row"><label for="flaker_c_heigth">Wysokość (xx px lub auto):</label></th>'; 
-	$html .= '<td><input type="text" id="flaker_c_heigth" name="flaker_c_heigth" value="'.get_option('flaker_c_heigth').'"/></td><tr>';
+	$html .= '<tr><th scope="row"><label for="flaker_c_height">Wysokość (xx px lub auto):</label></th>'; 
+	$html .= '<td><input type="text" id="flaker_c_height" name="flaker_c_height" value="'.get_option('flaker_c_height').'"/></td><tr>';
 	
 	$html .= '<tr><th scope="row"><label for="flaker_c_bg">Tło:</label></th>'; 
 	$html .= '<td><input type="text" id="flaker_c_bg" name="flaker_c_bg" value="'.get_option('flaker_c_bg').'"/></td><tr>';
@@ -239,6 +255,13 @@ function flaker_c_settings_page() {
 	                <option value="desc" '.(get_option('flaker_c_sort')=='desc'?'selected="selected"':'').'>najnowsze u góry</option>
 	              </select></td><tr>';
 	
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_singlemode">Tylko na stronie wpisu?</label></th>'; 
+	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_singlemode" name="flaker_c_singlemode" '.(get_option('flaker_c_singlemode')?'checked="checked"':'').'  /></td><tr>';
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_border">Obramowanie:</label></th>'; 
+	$html .= '<td><input type="text" id="flaker_c_border" name="flaker_c_border" value="'.get_option('flaker_c_border').'"/></td><tr>';
+
 	
 	$html .= '</tbody></table><p class="submit">
   <input type="submit" name="Submit" class="button-primary" value="Zapisz zmiany" />
