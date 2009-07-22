@@ -29,6 +29,7 @@ function flaker_c(options){
 		show_favs : 1,
 		show_comments : 1,
 		show_reactions : 1,
+		show_visits : 1,
 		form_add : true,
 		show_flaker_button : 1,
 		debug : false,
@@ -54,14 +55,13 @@ function flaker_c(options){
 }
 
 
+
 flaker_c.prototype.blog_init = function(){
 	var obj = this;
 	
 	this.scope = jQuery(obj.options.target);
 	this.options.form_width = this.correct_sizes(this.options.form_width);
 	this.options.height = this.correct_sizes(this.options.height);
-	
-	this.debug(this.options);
 	
 	if(this.scope.length){
 		this.debug("target found - init");
@@ -72,6 +72,7 @@ flaker_c.prototype.blog_init = function(){
 		this.debug("target not found");
 	}
 	
+	this.deconstruct();
 }
 
 flaker_c.prototype.frame_init = function(){
@@ -79,6 +80,14 @@ flaker_c.prototype.frame_init = function(){
 	this.debug("frame init");
 	this.visTrigger();
 	this.bind_form();
+	this.deconstruct();
+}
+
+flaker_c.prototype.deconstruct = function(){
+	var obj = this;
+	this.debug(obj.options);
+	this.debug(obj.refs);
+	this.debug(this.datasource);
 }
 
 flaker_c.prototype.show_widget = function(){
@@ -257,77 +266,96 @@ flaker_c.prototype.parse_json = function(json){
 			}
 			
 		});
-			
-		this.debug("datasource parsing completed");
-		this.debug(datasource);
-		this.build_list_of_comments(datasource);
+		
+		this.debug("datasource parsing completed: in=" +entries.length+" out=" +datasource.length);
+		this.datasource = datasource;
+		this.build_list();
+		
 	}
 }
 
-flaker_c.prototype.build_list_of_comments = function(datasource){
+flaker_c.prototype.build_list = function(){
 
 	var obj = this;
-		
+	var datasource = this.datasource;
+	var container = jQuery("<ol></ol>");
+	
+	if(this.options.height == 'auto'){
+		if(datasource.length > 3){
+			container.css({height :  "150px",
+						overflow: 'auto'
+					});
+		}else{
+			container.css({height : "auto" ,
+					   overflow: 'visible'
+					});
+		}
+	}else{
+		container.css({height : obj.options.height, 
+					   overflow: 'auto'
+					  });
+	}
+	
+	container.attr({"class":obj.options.list_class});
+	container.css({"width": obj.options.form_width});
+	
+	this.refs["container"] = container;
+	this.scope.append(container);
+	
+	this.parse_comments();
+	this.parse_trakers();
+	this.parse_likes();
+	
+
+}
+	
+
+flaker_c.prototype.parse_comments = function(datasource){
+	var obj = this;
+	var datasource = this.datasource;
 	if(datasource.length){
 	
-		var container = jQuery("<ol></ol>");
-				
-		if(this.options.height == 'auto'){
-			if(datasource.length > 3){
-				container.css({height :  "150px",
-							overflow: 'auto'
-						});
-			}else{
-				container.css({height : "auto" ,
-						   overflow: 'visible'
-						});
-			}
-		}else{
-			container.css({height : obj.options.height, 
-						   overflow: 'auto'
-						  });
-		}
-		
-		container.attr({"class":obj.options.list_class});
-		container.css({"width": obj.options.form_width});
-		
-		this.scope.append(container);
-		
-	
 		jQuery.each(datasource,function(i,c){
-			container.append( obj.parse_comment(c) );
+			obj.refs["container"].append( obj.parse_comment(c) );
 		});
 		
-		
-		this.parse_trakers();
-		this.parse_likes();
-		
-		this.refs["container"] = container;
-		this.refs["traker"] = t;
-	
 	}else{
 		this.debug("error: comments parsing failed!");
 	}
-	
+
 }
 
 
 flaker_c.prototype.parse_comment = function(c){
 
 	var obj = this;
-	
-	/*if comments is not a comment lets skip it!*/
+	var av_size = 32;
 	
 	var subsource = (typeof(c.subsource)!="undefined" ? c.subsource : '');
 	
+	this.debug("parsing comment: type=" + subsource);
+
+	/*html*/
+	
+	var l = c.user.login;
+	var t = c.text;
+	var id = c.id;
+	var d = c.datetime;
+	
+	this.debug(id + l + d);
+	
 	if(subsource == 'internal_favorited'){
+		/*if comments is not a comment lets skip it!*/
 		this.likes.push(c);
+		
 	}else{
 	
-		var l = c.user.login;
-		var av = '<img src="'+this.change_avatar(c.user.avatar, 32)+'" alt="avatar" />';
-		var t = c.text;
-
+		if(subsource == 'internal_comment'){
+			av_size = 16;
+		}
+	
+		var av = '<img src="'+this.change_avatar(c.user.avatar, av_size)+'" alt="avatar" />';
+	
 		switch (c.subsource){
 		case 'flaker_link':
 			var a = obj.options.lang_quoted;
@@ -336,8 +364,7 @@ flaker_c.prototype.parse_comment = function(c){
 			var a = obj.options.lang_commented;
 		}
 		
-		
-		var d = c.datetime;
+	
 		return '<li>'+
 		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
 		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
@@ -346,8 +373,6 @@ flaker_c.prototype.parse_comment = function(c){
 		'</li>';
 	}
 	
-	
-	
 }
 
 flaker_c.prototype.parse_trakers = function(){
@@ -355,7 +380,7 @@ flaker_c.prototype.parse_trakers = function(){
 	var obj = this;
 	this.debug("trakers found: " + obj.traker.length);
 	
-	if(obj.traker.length > 0){
+	if(this.options.show_visits && obj.traker.length > 0){
 			obj.debug("append traker");
 			obj.debug(obj.traker);
 			var t = jQuery("<li></li>");
@@ -364,6 +389,7 @@ flaker_c.prototype.parse_trakers = function(){
 	t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
 			});
 			this.refs["container"].append(t);
+			this.refs["traker"] = t;
 	}
 	
 }
@@ -551,7 +577,7 @@ flaker_c.prototype.embed_button = function(button, options){
 
 
 flaker_c.prototype.change_avatar = function(path, size){
-	if(parseInt(size) > 16){
+	if(parseInt(size) > 15){
 		return path.replace(/_(16|32|50|80)\.jpeg/gi, "_"+size+".jpeg");
 	}else{
 		return path;
