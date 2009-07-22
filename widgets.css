@@ -147,8 +147,8 @@ div.tor { display: none; }
 .flaker_c .flaker_c_list span.flaker_c_date {font-size: 8pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
 .flaker_c .flaker_c_list span.flaker_c_date a {color: #ccc;}
 
-.flaker_c .flaker_c_list li div.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; }
-.flaker_c .flaker_c_list li div.flaker_c_text a {text-decoration: none; color: #0066CC;}
+.flaker_c .flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
+.flaker_c .flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC;}
 
 .flaker_c_list li .reactions {}
 

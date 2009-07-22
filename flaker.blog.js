@@ -40,11 +40,13 @@ function flaker_c(options){
 		sort : "asc",
 		height: "auto",
 		bg : "#fff",
+		border : "#f0f0f0",
 		timestamp : 0,
 		lang_success : "komentarz został dodany",
 		lang_commented : "skomentował",
 		lang_quoted : "cytował" };
 		
+	this.defaults = defaults;
 	this.options = jQuery.extend(defaults, options);
 	this.UID = this.fencode(this.options.url);
 	if(document.location.host == 'wp.flaker.pl'){
@@ -66,7 +68,7 @@ flaker_c.prototype.blog_init = function(){
 	if(this.scope.length){
 		this.debug("target found - init");
 		this.show_widget();
-		this.show_heading();
+		
 		this.run();
 	}else{
 		this.debug("target not found");
@@ -95,6 +97,8 @@ flaker_c.prototype.show_widget = function(){
 	this.scope.addClass(obj.options.widget_class);
 	this.scope.css({width : obj.options.form_width, 
 				backgroundColor : obj.options.bg});
+				
+	this.show_heading();
 }
 
 flaker_c.prototype.show_heading = function(){
@@ -316,7 +320,13 @@ flaker_c.prototype.parse_comments = function(datasource){
 	if(datasource.length){
 	
 		jQuery.each(datasource,function(i,c){
-			obj.refs["container"].append( obj.parse_comment(c) );
+		
+			if(obj.options.sort == "asc"){
+				obj.refs["container"].append( obj.parse_comment(c) );
+			}else{
+				obj.refs["container"].prepend( obj.parse_comment(c) );
+			}	
+			
 		});
 		
 	}else{
@@ -330,7 +340,7 @@ flaker_c.prototype.parse_comment = function(c){
 
 	var obj = this;
 	var av_size = 32;
-	
+	var action = '';
 	var subsource = (typeof(c.subsource)!="undefined" ? c.subsource : '');
 	
 	this.debug("parsing comment: type=" + subsource);
@@ -356,19 +366,22 @@ flaker_c.prototype.parse_comment = function(c){
 	
 		var av = '<img src="'+this.change_avatar(c.user.avatar, av_size)+'" alt="avatar" />';
 	
-		switch (c.subsource){
+		switch (subsource){
 		case 'flaker_link':
-			var a = obj.options.lang_quoted;
+			var action = obj.options.lang_quoted;
+		break;
+		case 'internal_comment':
+			d = 'flak';
 		break;
 		default:
-			var a = obj.options.lang_commented;
+			//var action = obj.options.lang_commented;
 		}
 	
 		return '<li class="'+subsource+'">'+
 		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
-		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
+		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+action+'</span> ' +
 		'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
-		'<div class="fleft flaker_c_text">'+t+'</div>'+
+		'<span class="fleft flaker_c_text">'+t+'</span>'+
 		'</li>';
 	}
 	
