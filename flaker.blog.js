@@ -1,7 +1,11 @@
 
 
 function flaker_c(options){
+	/*
 	
+	http://flaker.pl/api/type:url2hash/format:json/comments:true/url:aHR0cDovL3Bvem5hbi5iYXJjYW1wLnBsLzIwMDkvMDcvMTMvcGxlbmVyb3d5LWJhcmNhbXAxNy1pLWZsYWtwYXJ0eS1qdXotemEtbmFtaS8,/title:UGxlbmVyb3d5IEJhcmNhbXAjMTcgaSBGbGFrUGFydHkganXFvCB6YSBuYW1p?jsoncallback=jsonp1248222819089&_=1248222820274
+
+	*/
 		
 	if(typeof(jQuery.metadata)=="undefined"){
 		(function($){$.extend({metadata:{defaults:{type:'class',name:'metadata',cre:/({.*})/,single:'metadata'},setType:function(type,name){this.defaults.type=type;this.defaults.name=name;},get:function(elem,opts){var settings=$.extend({},this.defaults,opts);if(!settings.single.length)settings.single='metadata';var data=$.data(elem,settings.single);if(data)return data;data="{}";if(settings.type=="class"){var m=settings.cre.exec(elem.className);if(m)data=m[1];}else if(settings.type=="elem"){if(!elem.getElementsByTagName)return;var e=elem.getElementsByTagName(settings.name);if(e.length)data=$.trim(e[0].innerHTML);}else if(elem.getAttribute!=undefined){var attr=elem.getAttribute(settings.name);if(attr)data=attr;}if(data.indexOf('{')<0)data="{"+data+"}";data=eval("("+data+")");$.data(elem,settings.single,data);return data;}}});$.fn.metadata=function(opts){return $.metadata.get(this[0],opts);};})(jQuery);
@@ -49,7 +53,7 @@ function flaker_c(options){
 	if(document.location.host == 'wp.flaker.pl'){
 		this.API_URL = 'http://staging.flaker.pl/api';
 	}else{
-		this.API_URL = 'http://flaker.pl/api';
+		this.API_URL = 'http://api.flaker.pl/api';
 	}
 }
 
@@ -99,13 +103,12 @@ flaker_c.prototype.show_heading = function(){
 
 	this.scope.prepend(button_holder);
 	this.refs["heading"] = button_holder;
-	
 }
 
 flaker_c.prototype.run = function(){
 	var obj = this;
 	var config = {type:'url2hash',
-							url:obj.UID,
+							url:this.UID,
 							title:this.fencode(this.options.title)};
 							
 	this.debug(config);
