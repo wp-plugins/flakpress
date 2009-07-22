@@ -37,7 +37,8 @@ function flaker_c(options){
 		list_class : "flaker_c_list", 
 		form_class : "flaker_c_form", 
 		form_width : "500px",
-		sort : "asc",
+		sort : "desc",
+		prevent_float : true,
 		height: "auto",
 		bg : "#fff",
 		border : "#f0f0f0",
@@ -106,6 +107,19 @@ flaker_c.prototype.show_widget = function(){
 	
 	this.refs["heading"].css({backgroundColor : border});
 	this.scope.css({borderColor: border});
+	
+	if(this.options.prevent_float){
+		var div = jQuery("<div></div>");
+		div.addClass("flaker_c_clearing");
+		div.css({width: '100%',
+				height: '0px',
+				cssFloat : 'none',
+				styleFloat : 'none',
+				clear : 'both'
+				});
+		this.scope.before(div).after(div);
+	}
+	
 }
 
 flaker_c.prototype.show_heading = function(){
@@ -262,7 +276,7 @@ flaker_c.prototype.parse_json = function(json){
 				break;
 				case 'internal_traker':
 					obj.debug("parsing internal_traker");
-					obj.traker.push(entry.user);	
+					obj.traker.push(entry);	
 				break;
 				case 'rss_entry':
 					obj.debug("parsing rss_entry - comments");
@@ -315,10 +329,10 @@ flaker_c.prototype.build_list = function(){
 	this.scope.append(container);
 	
 	this.parse_comments();
-	this.parse_trakers();
-	this.parse_likes();
 	
-
+	this.parse_likes();
+	this.parse_trakers();
+	
 }
 	
 
@@ -348,14 +362,12 @@ flaker_c.prototype.parse_comment = function(c){
 
 	var obj = this;
 	
-	var subsource = (typeof(c.subsource)!="undefined" ? c.subsource : '');
+	this.debug("parsing comment: type=" + c.subsource);
 	
-	this.debug("parsing comment: type=" + subsource);
-	
-	if(subsource == 'internal_favorited'){
+	if(c.subsource == 'internal_favorited'){
 		this.likes.push(c);
 	}else{
-		if(subsource == "internal_comment"){
+		if(c.subsource == "internal_comment"){
 			return this.build_internal_entry(c);
 		}else{
 			return this.build_entry(c);
@@ -405,25 +417,28 @@ flaker_c.prototype.build_internal_entry = function(c){
 flaker_c.prototype.parse_trakers = function(){
 	
 	var obj = this;
+
 	this.debug("trakers found: " + this.traker.length);
 	
 	if(this.options.show_visits && this.traker.length){
 			this.debug("append traker");
 			this.debug(this.traker);
 			var t = jQuery("<li></li>");
-			t.addClass("visitors traker");
-			t.html('<span class="flaker_c_visitors">odwiedzili:</span> ');
-			jQuery.each(obj.traker,function(i,u){			
-t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
-			});
+			t.addClass("visitors");
+			t.html('<span class="traker with_icon flaker_c_visitors">odwiedzili:</span> ');
+			
+			var list = this.build_userlist(this.traker);
+			t.append(list);
 			this.refs["container"].append(t);
 			this.refs["traker"] = t;
 	}
 	
 }
 
-flaker_c.prototype.parse_likes = function(likes){
+flaker_c.prototype.parse_likes = function(){
+
 	var obj = this;
+	
 	this.debug("likes found: " + this.likes.length);
 	
 	if(this.options.show_favs && this.likes.length){
@@ -431,13 +446,33 @@ flaker_c.prototype.parse_likes = function(likes){
 		this.debug(this.likes);
 		var l = jQuery("<li></li>");
 		l.addClass("likings");
-		l.html('<span class="flaker_c_likings">polecili:</span> ');
-		jQuery.each(obj.likes, function(i, u){
-l.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
-		});
+		
+		l.html('<span class="love with_icon flaker_c_likings">polecili:</span> ');
+		
+		var list = this.build_userlist(this.likes);
+		l.append(list);
+		
 		this.refs["container"].append(l);
 		this.refs["likes"] = l;
 	}
+}
+
+flaker_c.prototype.build_userlist = function(source){
+
+		var obj = this;
+		var users = [];
+		var html = '<span class="userlist">';
+		
+		jQuery.each(source, function(i, u){
+			
+			if(jQuery.inArray(u.user.login, users) < 0){
+					html += "<a href='"+u.user.url+"'>"+
+					"<img src='"+obj.change_avatar(u.user.avatar, 16)+"' alt='"+u.user.login+"' />"+
+					"</a>";
+			}
+			users.push(u.user.login);
+		});
+		return html + '</span>';
 }
 
 flaker_c.prototype.show_bookmarklet = function(){
@@ -506,6 +541,8 @@ flaker_c.prototype.correct_size = function(str){
 flaker_c.prototype.correct_color = function(key){
 	if(this.options[key] == "auto"){
 		return this.defaults[key];
+	}else{
+		return this.options[key];
 	}
 }
 
@@ -619,7 +656,7 @@ flaker_c.prototype.embed_button = function(button, options){
 
 
 flaker_c.prototype.change_avatar = function(path, size){
-	if(parseInt(size) > 15){
+	if(typeof(path)=='string' && parseInt(size) > 15){
 		return path.replace(/_(16|32|50|80)\.jpeg/gi, "_"+size+".jpeg");
 	}else{
 		return path;

@@ -137,14 +137,15 @@ div.tor { display: none; }
 .flaker_c .flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3;}
 .flaker_c .flaker_c_list li .fleft {float:left; overflow:visible; display:block;}
 
+.flaker_c .flaker_c_list span {line-height: normal;}
 .flaker_c .flaker_c_list span.flaker_c_avatar {font-weight:bold;  margin-right: 10px; }
 .flaker_c .flaker_c_list span.flaker_c_avatar a {text-decoration: none; color: #000;}
 .flaker_c .flaker_c_list span.flaker_c_avatar a img {text-decoration: none; border:none;}
 
-.flaker_c .flaker_c_list span.flaker_c_author { font-size: 8pt;  width: 200px; line-height:100%; margin: -2px 0 5px 0; color: #ccc;}
-.flaker_c .flaker_c_list span.flaker_c_author a { font-size: 9pt;  font-weight:bold; text-decoration: none; color: #000;}
+.flaker_c .flaker_c_list span.flaker_c_author { font-family: verdana, sans-serif; font-size: 8pt;  width: 200px; line-height:100%; margin: -2px 0 5px 0; color: #ccc;}
+.flaker_c .flaker_c_list span.flaker_c_author a { font-weight:bold; text-decoration: none; color: #000;}
 
-.flaker_c .flaker_c_list span.flaker_c_date {font-size: 8pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
+.flaker_c .flaker_c_list span.flaker_c_date {font-size: 7pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
 .flaker_c .flaker_c_list span.flaker_c_date a {color: #ccc;}
 
 .flaker_c .flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
@@ -155,10 +156,15 @@ div.tor { display: none; }
 
 
 .flaker_c .flaker_c_list li.internal_comment {}
-.flaker_c .flaker_c_list li.internal_comment span {margin: 0px; width: auto; line-height: normal;}
-.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {display:inline;float:none;}
+.flaker_c .flaker_c_list li.internal_comment span {margin-top: 0px; width: auto; line-height: normal;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_author {margin-right: 5px;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {float:left;}
 
 
+.flaker_c .flaker_c_list li.likings .flaker_c_likings {display: block; float:none;}
+
+
+.flaker_c .with_icon {padding-left: 20px; background-repeat: no-repeat ; }
 
 
 
@@ -185,7 +191,7 @@ iframe.flaker_c_form { overflow:hidden; display:none; }
 #anonymous {width: 100%; height: auto; float:left; display:none; }
 #anonymous .formPart { width: 50%; }
 
-#anonymous .formPart { margin-left: 10px; }
+
 
 .flaker_c_form .rightcol label {margin-left: 5px;}
 .flaker_c_form .rightcol input {margin-left: 5px;}

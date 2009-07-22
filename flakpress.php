@@ -53,7 +53,7 @@ function flaker_c_disable_wp_comments(){
 // Ustawianie zmiennych
 function flaker_c_set_options() {
 	add_option('flaker_c_is_active', 1);
-	add_option('flaker_c_form_width', "600px");
+	add_option('flaker_c_form_width', "450px");
 	add_option('flaker_c_form_add', 1);
 	add_option('flaker_c_show_visits', 1);
 	add_option('flaker_c_show_favs', 1);
