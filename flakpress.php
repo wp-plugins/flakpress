@@ -220,7 +220,7 @@ function flaker_c_settings_page() {
   }
 
 	
-	$html = '<div id="flaker-wpplugin">
+	$html = '<div id="flaker-wpplugin" class="wrap">
 		<h2>Parametry pluginu</h2>
 		<form id="flaker-wpplugin-form" name="flaker-wpplugin-form" action="" method="post">
 		<table class="form-table"><tbody>';
