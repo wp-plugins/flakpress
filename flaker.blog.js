@@ -104,9 +104,13 @@ flaker_c.prototype.show_heading = function(){
 
 flaker_c.prototype.run = function(){
 	var obj = this;
-	jQuery.getJSON(obj.build_url({type:'url2hash',
+	var config = {type:'url2hash',
 							url:obj.UID,
-							title:obj.fencode(obj.options.title)})+'?jsoncallback=?',
+							title:this.fencode(this.options.title)};
+							
+	this.debug(config);
+	
+	jQuery.getJSON(obj.build_url(config)+'?jsoncallback=?',
 				function(result){
 				
 					obj.debug(result);
@@ -183,7 +187,7 @@ flaker_c.prototype.parse_params = function(scriptname){
 
 flaker_c.prototype.debug = function(msg){
 	var obj = this;
-	if(typeof(console)!="undefined" && this.options.debug){
+	if(typeof(console)!="undefined" && parseInt(this.options.debug)){
 		console.log("output from: " + arguments.callee.caller.toString());
 		console.log(msg);
 	}
