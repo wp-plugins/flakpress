@@ -126,37 +126,37 @@ div.tor { display: none; }
 .flaker_c .fullw {width: 100%;float:left; font-size:10pt;}
 
 
-.flaker_c_button {float:left; padding: 3px 3px 3px 22px; font-size: 8pt;}
+.flaker_c .flaker_c_button {float:left; padding: 3px 3px 3px 22px; font-size: 8pt;}
 
-.flaker_c_heading {width: 100%; float:left; font-weight: bold; color: #333; background-color: #eaeaea; }
-.flaker_c_heading a {color: inherit; margin-left: 5px; font-size:9pt;}
+.flaker_c .flaker_c_heading {width: 100%; float:left; font-weight: bold; color: #333; background-color: #eaeaea; }
+.flaker_c .flaker_c_heading a {color: inherit; margin-left: 5px; font-size:9pt;}
 
-.flaker_c_heading .fright {margin: 2px 10px 2px 0; font-size: 8pt;}
+.flaker_c .flaker_c_heading .fright {margin: 2px 10px 2px 0; font-size: 8pt;}
 
-.flaker_c_list {list-style-type:none; width: 100%; color:#000;font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; float:left; padding:0; margin: 10px 0; overflow: hidden;}
-.flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3;}
-.flaker_c_list li .fleft {float:left; overflow:visible; display:block;}
+.flaker_c .flaker_c_list {list-style-type:none; width: 100%; color:#000;font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; float:left; padding:0; margin: 10px 0; overflow: hidden;}
+.flaker_c .flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3;}
+.flaker_c .flaker_c_list li .fleft {float:left; overflow:visible; display:block;}
 
-.flaker_c_list span.flaker_c_avatar {font-weight:bold;  margin-right: 10px; }
-.flaker_c_list span.flaker_c_avatar a {text-decoration: none; color: #000;}
-.flaker_c_list span.flaker_c_avatar a img {text-decoration: none; border:none;}
+.flaker_c .flaker_c_list span.flaker_c_avatar {font-weight:bold;  margin-right: 10px; }
+.flaker_c .flaker_c_list span.flaker_c_avatar a {text-decoration: none; color: #000;}
+.flaker_c .flaker_c_list span.flaker_c_avatar a img {text-decoration: none; border:none;}
 
-.flaker_c_list span.flaker_c_author { font-size: 8pt;  width: 200px; line-height:100%; margin: -2px 0 5px 0; color: #ccc;}
-.flaker_c_list span.flaker_c_author a { font-size: 9pt;  font-weight:bold; text-decoration: none; color: #000;}
+.flaker_c .flaker_c_list span.flaker_c_author { font-size: 8pt;  width: 200px; line-height:100%; margin: -2px 0 5px 0; color: #ccc;}
+.flaker_c .flaker_c_list span.flaker_c_author a { font-size: 9pt;  font-weight:bold; text-decoration: none; color: #000;}
 
-.flaker_c_list span.flaker_c_date {font-size: 8pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
-.flaker_c_list span.flaker_c_date a {color: #ccc;}
+.flaker_c .flaker_c_list span.flaker_c_date {font-size: 8pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
+.flaker_c .flaker_c_list span.flaker_c_date a {color: #ccc;}
 
-.flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
-.flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC;}
+.flaker_c .flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
+.flaker_c .flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC;}
 
-.flaker_c_list li .reactions {}
-
-
+.flaker_c .flaker_c_list li .reactions {}
 
 
-.flaker_c_list li.internal_comment {}
-.flaker_c_list li.internal_comment .flaker_c_text {display:inline;float:none;}
+
+.flaker_c .flaker_c_list li.internal_comment {}
+.flaker_c .flaker_c_list li.internal_comment span {margin: 0px; width: auto; line-height: normal;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {display:inline;float:none;}
 
 
 

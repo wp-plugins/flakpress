@@ -62,8 +62,8 @@ flaker_c.prototype.blog_init = function(){
 	var obj = this;
 	
 	this.scope = jQuery(obj.options.target);
-	this.options.form_width = this.correct_sizes(this.options.form_width);
-	this.options.height = this.correct_sizes(this.options.height);
+	this.options.form_width = this.correct_size(this.options.form_width);
+	this.options.height = this.correct_size(this.options.height);
 	
 	if(this.scope.length){
 		this.debug("target found - init");
@@ -96,9 +96,16 @@ flaker_c.prototype.show_widget = function(){
 	var obj = this;
 	this.scope.addClass(obj.options.widget_class);
 	this.scope.css({width : obj.options.form_width, 
-				backgroundColor : obj.options.bg});
+				backgroundColor : obj.correct_color("bg")});
 				
 	this.show_heading();
+	
+	/*lets apply styling*/
+	
+	var border = this.correct_color("border");
+	
+	this.refs["heading"].css({backgroundColor : border});
+	this.scope.css({borderColor: border});
 }
 
 flaker_c.prototype.show_heading = function(){
@@ -114,6 +121,7 @@ flaker_c.prototype.show_heading = function(){
 
 	this.scope.prepend(button_holder);
 	this.refs["heading"] = button_holder;
+	
 }
 
 flaker_c.prototype.run = function(){
@@ -339,66 +347,74 @@ flaker_c.prototype.parse_comments = function(datasource){
 flaker_c.prototype.parse_comment = function(c){
 
 	var obj = this;
-	var av_size = 32;
-	var action = '';
+	
 	var subsource = (typeof(c.subsource)!="undefined" ? c.subsource : '');
 	
 	this.debug("parsing comment: type=" + subsource);
-
-	/*html*/
-	
-	var l = c.user.login;
-	var t = c.text;
-	var id = c.id;
-	var d = c.datetime;
-	
-	this.debug(id + l + d);
 	
 	if(subsource == 'internal_favorited'){
-		/*if comments is not a comment lets skip it!*/
 		this.likes.push(c);
-		
 	}else{
-	
-		if(subsource == 'internal_comment'){
-			av_size = 16;
+		if(subsource == "internal_comment"){
+			return this.build_internal_entry(c);
+		}else{
+			return this.build_entry(c);
 		}
+	}
+}
+
+flaker_c.prototype.build_entry = function(c){
 	
-		var av = '<img src="'+this.change_avatar(c.user.avatar, av_size)+'" alt="avatar" />';
+	var obj = this;
+	var av = '<img src="'+this.change_avatar(c.user.avatar, 32)+'" alt="avatar" />';
+	var action = '';
 	
-		switch (subsource){
+	switch (c.subsource){
 		case 'flaker_link':
 			var action = obj.options.lang_quoted;
 		break;
-		case 'internal_comment':
-			d = 'flak';
-		break;
 		default:
 			//var action = obj.options.lang_commented;
-		}
-	
-		return '<li class="'+subsource+'">'+
-		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
-		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+action+'</span> ' +
-		'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
-		'<span class="fleft flaker_c_text">'+t+'</span>'+
-		'</li>';
 	}
+	
+	return '<li class="'+c.subsource+'">'+
+		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
+		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+c.user.login+'</a> '+action+'</span> ' +
+		'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+c.datetime+'</a></span> ' +
+		'<span class="fleft flaker_c_text">'+c.text+'</span>'+
+		'</li>';
+
+}
+
+
+flaker_c.prototype.build_internal_entry = function(c){
+	
+	var obj = this;
+	
+	var av = '<img src="'+this.change_avatar(c.user.avatar, 16)+'" alt="avatar" />';
+	
+	return '<li class="internal_comment">'+
+		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
+		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+c.user.login+'</a></span> ' +
+		'<span class="fleft flaker_c_text">'+c.text+'</span>'+
+		'<span class="fleft flaker_c_date"><a href="'+c.permalink+'" title="'+c.datetime+'">flak</a></span> ' +
+		'</li>';
 	
 }
 
 flaker_c.prototype.parse_trakers = function(){
 	
 	var obj = this;
-	this.debug("trakers found: " + obj.traker.length);
+	this.debug("trakers found: " + this.traker.length);
 	
-	if(this.options.show_visits && obj.traker.length > 0){
-			obj.debug("append traker");
-			obj.debug(obj.traker);
+	if(this.options.show_visits && this.traker.length){
+			this.debug("append traker");
+			this.debug(this.traker);
 			var t = jQuery("<li></li>");
 			t.addClass("visitors traker");
+			t.html('<span class="flaker_c_visitors">odwiedzili:</span> ');
 			jQuery.each(obj.traker,function(i,u){			
-	t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
+t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
 			});
 			this.refs["container"].append(t);
 			this.refs["traker"] = t;
@@ -410,9 +426,17 @@ flaker_c.prototype.parse_likes = function(likes){
 	var obj = this;
 	this.debug("likes found: " + this.likes.length);
 	
-	if(this.options.show_favs){
-	
-	
+	if(this.options.show_favs && this.likes.length){
+		this.debug("append likes");
+		this.debug(this.likes);
+		var l = jQuery("<li></li>");
+		l.addClass("likings");
+		l.html('<span class="flaker_c_likings">polecili:</span> ');
+		jQuery.each(obj.likes, function(i, u){
+l.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
+		});
+		this.refs["container"].append(l);
+		this.refs["likes"] = l;
 	}
 }
 
@@ -470,12 +494,18 @@ flaker_c.prototype.build_url = function(options){
 	return url;
 }
 
-flaker_c.prototype.correct_sizes = function(str){
+flaker_c.prototype.correct_size = function(str){
 	var str = str.replace(/\s/gi, "");
 	if(str.search(/(px|em|%|auto)/gi)!=-1){
 		return str;
 	}else{
 		return str + "px";
+	}
+}
+
+flaker_c.prototype.correct_color = function(key){
+	if(this.options[key] == "auto"){
+		return this.defaults[key];
 	}
 }
 
@@ -603,6 +633,23 @@ flaker_c.prototype.fencode = function(str){
 		return string;
 }
 
+flaker_c.prototype.bind_switch_user = function(){
+	jQuery("#switchUserButton").click(function(e){
+		e.preventDefault();
+		var ref = jQuery(this);
+		var a = jQuery("#anonymous");
+		var c = jQuery("#credentials");
+		var is_c = c.is(":visible");
+		a.slideToggle();
+		c.slideToggle();
+		if(is_c){
+		  var t = "zaloguj się";
+		} else {
+		  var t = "dodaj bez logowania";
+		}
+		ref.html(t);
+	});	
+}
 
 
 

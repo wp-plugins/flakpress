@@ -67,11 +67,11 @@ function flaker_c_set_options() {
 	add_option('flaker_c_bg','#fff');
 	add_option('flaker_c_anonim',1);
 	
-	add_option('flaker_c_sort','asc');
+	add_option('flaker_c_sort','desc');
 	
 	add_option('flaker_c_singlemode', 1);
 	
-	add_option('flaker_c_border','auto');
+	add_option('flaker_c_border','#fc6');
 }
 
 // Kasowanie zmiennych
@@ -164,8 +164,8 @@ echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.
 	
 if($_SERVER["HTTP_HOST"] == "wp.flaker.pl"){
 	
-	echo '<script src="http://staging.flaker.pl/static/js/flaker/flaker.blog.js" type="text/javascript"></script>' . "\n";
-	echo '<link href="http://staging.flaker.pl/static/css/flaker/widgets.css" rel="stylesheet" type="text/css" media="screen" />' . "\n";
+	echo '<script src="http://staging.flaker.pl/static/js/flaker/flaker.blog.js?ver='.time().'" type="text/javascript"></script>' . "\n";
+	echo '<link href="http://staging.flaker.pl/static/css/flaker/widgets.css?ver='.time().'" rel="stylesheet" type="text/css" media="screen" />' . "\n";
 
 }else{
 
@@ -221,57 +221,25 @@ function flaker_c_settings_page() {
 
 	
 	$html = '<div id="flaker-wpplugin" class="wrap">
-		<h2>Parametry pluginu</h2>
+		<h2>Flakpress - Ustawienia</h2>
 		<form id="flaker-wpplugin-form" name="flaker-wpplugin-form" action="" method="post">
 		<table class="form-table"><tbody>';
 		
-	$html .= '<tr><th scope="row"><label for="flaker_c_is_active">Wtyczka jest aktywna?</label></th>'; 
-	$html .= '<td><input type="checkbox" value="1" id="flaker_c_is_active" name="flaker_c_is_active" '.(get_option('flaker_c_is_active')?'checked="checked"':'').'  /></td><tr>';
+	$html .= '<tr><th scope="row">Ustawienia ogólne</th>'; 
+	$html .= '<td><input type="checkbox" value="1" id="flaker_c_is_active" name="flaker_c_is_active" '.(get_option('flaker_c_is_active')?'checked="checked"':'').'  /> <label for="flaker_c_is_active">wtyczka jest aktywna</label><br/><input type="checkbox"  value="1" id="flaker_c_debug" name="flaker_c_debug" '.(get_option('flaker_c_debug')?'checked="checked"':'').'  /> <label for="flaker_c_debug">debugowanie</label></td><tr>';
 	
-	$html .= '<tr><th scope="row"><label for="flaker_c_form_add">Pokazać formularz komentowania?</label></th>'; 
-	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_form_add" name="flaker_c_form_add" '.(get_option('flaker_c_form_add')?'checked="checked"':'').'  /></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_form_width">Szerokość ramki dodawania:</label></th>'; 
-	$html .= '<td><input type="text" id="flaker_c_form_width" name="flaker_c_form_width" value="'.get_option('flaker_c_form_width').'"/></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_show_visits">Pokazać pojedyńcze odwiedziny?</label></th>'; 
-	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_show_visits" name="flaker_c_show_visits" '.(get_option('flaker_c_show_visits')?'checked="checked"':'').'  /></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_show_favs">Pokazać oceny?</label></th>'; 
-	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_show_favs" name="flaker_c_show_favs" '.(get_option('flaker_c_show_favs')?'checked="checked"':'').'  /></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_show_comments">Pokazać komentarze?</label></th>'; 
-	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_show_comments" name="flaker_c_show_comments" '.(get_option('flaker_c_show_comments')?'checked="checked"':'').'  /></td><tr>';
-
-	$html .= '<tr><th scope="row"><label for="flaker_c_show_reactions">Pokazać cytowania?</label></th>'; 
-	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_show_reactions" name="flaker_c_show_reactions" '.(get_option('flaker_c_show_reactions')?'checked="checked"':'').'  /></td><tr>';	
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_show_flaker_button">Pokazać przycisk dodaj na flakera?</label></th>'; 
-	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_show_flaker_button" name="flaker_c_show_flaker_button" '.(get_option('flaker_c_show_flaker_button')?'checked="checked"':'').'  /></td><tr>';
-	
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_debug">Włączyć debugowanie?</label></th>'; 
-	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_debug" name="flaker_c_debug" '.(get_option('flaker_c_debug')?'checked="checked"':'').'  /></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_comments_position">Pokazywać reakcje:</label></th>'; 
-	$html .= '<td><select type="text" id="flaker_c_comments_position" name="flaker_c_comments_position">
-	                <option value="above" '.(get_option('flaker_c_comments_position')=='above'?'selected="selected"':'').'>nad komentarzami z WP</option>'
-	                .'<option value="replace" '.(get_option('flaker_c_comments_position')=='replace'?'selected="selected"':'').'>zamiast komentarzy z WP</option>
-	              </select></td><tr>';
-	              
-	  	                #'.<option value="under" '.(get_option('flaker_c_comments_position')=='under'?'selected="selected"':'').'>pod komentarzami z WP</option>'
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_height">Wysokość (xx px lub auto):</label></th>'; 
-	$html .= '<td><input type="text" id="flaker_c_height" name="flaker_c_height" value="'.get_option('flaker_c_height').'"/></td><tr>';
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_bg">Tło:</label></th>'; 
-	$html .= '<td><input type="text" id="flaker_c_bg" name="flaker_c_bg" value="'.get_option('flaker_c_bg').'"/></td><tr>';
-	
-	
-	$html .= '<tr><th scope="row"><label for="flaker_c_anonim">Pozwolić na komentowanie bez logowania?</label></th>'; 
-	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_anonim" name="flaker_c_anonim" '.(get_option('flaker_c_anonim')?'checked="checked"':'').'  /></td><tr>';
+	$html .= '<tr><th scope="row">Dodawanie komentarzy:</th>'; 
+	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_form_add" name="flaker_c_form_add" '.(get_option('flaker_c_form_add')?'checked="checked"':'').'  /> <label for="flaker_c_form_add">dodawanie aktywne</label><br /><input type="checkbox"  value="1" id="flaker_c_anonim" name="flaker_c_anonim" '.(get_option('flaker_c_anonim')?'checked="checked"':'').'  /> <label for="flaker_c_anonim">komentowanie bez logowania</label></td><tr>';
 	
 
+	
+	$html .= '<tr><th scope="row">Pokazywanie wpisów:</th>'; 
+	$html .= '<td><input type="checkbox" value="1"  id="flaker_c_show_visits" name="flaker_c_show_visits" '.
+	(get_option('flaker_c_show_visits')?'checked="checked"':'').'  /> <label for="flaker_c_show_visits">odwiedziny</label><br/>'
+	.'<input type="checkbox"  value="1" id="flaker_c_show_favs" name="flaker_c_show_favs" '.
+	(get_option('flaker_c_show_favs')?'checked="checked"':'').'  /> <label for="flaker_c_show_favs">oceny wpisów</label><br/>'
+	.'<input type="checkbox" value="1"  id="flaker_c_show_comments" name="flaker_c_show_comments" '.(get_option('flaker_c_show_comments')?'checked="checked"':'').'  /> <label for="flaker_c_show_comments">komentarze</label><br/>'
+	.'<input type="checkbox" value="1"  id="flaker_c_show_reactions" name="flaker_c_show_reactions" '.(get_option('flaker_c_show_reactions')?'checked="checked"':'').'  /> <label for="flaker_c_show_reactions">wpisy cytujące twój post</label>'.'</td><tr>';
 	
 	$html .= '<tr><th scope="row"><label for="flaker_c_sort">Sortowanie:</label></th>'; 
 	$html .= '<td><select type="text" id="flaker_c_sort" name="flaker_c_sort">
@@ -280,12 +248,32 @@ function flaker_c_settings_page() {
 	              </select></td><tr>';
 	
 	
-	$html .= '<tr><th scope="row"><label for="flaker_c_singlemode">Tylko na stronie wpisu?</label></th>'; 
-	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_singlemode" name="flaker_c_singlemode" '.(get_option('flaker_c_singlemode')?'checked="checked"':'').'  /></td><tr>';
 	
-	$html .= '<tr><th scope="row"><label for="flaker_c_border">Obramowanie:</label></th>'; 
+	$html .= '<tr><th scope="row">Przycisk "poleć znajomym":</th>'; 
+	$html .= '<td><input type="checkbox"  value="1" id="flaker_c_show_flaker_button" name="flaker_c_show_flaker_button" '.(get_option('flaker_c_show_flaker_button')?'checked="checked"':'').'  /> <label for="flaker_c_show_flaker_button">dodaj przycisk nad listą wpisów</label></td><tr>';
+
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_comments_position">Wyświetlanie listy wpisów:</label></th>'; 
+	$html .= '<td><select type="text" id="flaker_c_comments_position" name="flaker_c_comments_position">
+	                <option value="above" '.(get_option('flaker_c_comments_position')=='above'?'selected="selected"':'').'>nad komentarzami z WP</option>'
+	                .'<option value="replace" '.(get_option('flaker_c_comments_position')=='replace'?'selected="selected"':'').'>zamiast komentarzy z WP</option>
+	              </select><br/><input type="checkbox"  value="1" id="flaker_c_singlemode" name="flaker_c_singlemode" '.(get_option('flaker_c_singlemode')?'checked="checked"':'').'  /> <label for="flaker_c_singlemode">tylko na stronie wpisu</label></td><tr>';
+
+	
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_form_width">Szerokość:</label></th>'; 
+  $html .= '<td><input type="text" id="flaker_c_form_width" name="flaker_c_form_width" value="'.get_option('flaker_c_form_width').'"/></td><tr>';
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_height">Wysokość:</label></th>'; 
+	$html .= '<td><input type="text" id="flaker_c_height" name="flaker_c_height" value="'.get_option('flaker_c_height').'"/></td><tr>';
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_bg">Kolor tła:</label></th>'; 
+	$html .= '<td><input type="text" id="flaker_c_bg" name="flaker_c_bg" value="'.get_option('flaker_c_bg').'"/></td><tr>';
+	
+	$html .= '<tr><th scope="row"><label for="flaker_c_border">Kolor obramowania:</label></th>'; 
 	$html .= '<td><input type="text" id="flaker_c_border" name="flaker_c_border" value="'.get_option('flaker_c_border').'"/></td><tr>';
 
+	
 	
 	$html .= '</tbody></table><p class="submit">
   <input type="submit" name="Submit" class="button-primary" value="Zapisz zmiany" />
