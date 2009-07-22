@@ -112,9 +112,8 @@ flaker_c.prototype.run = function(){
 							title:this.fencode(this.options.title)};
 							
 	this.debug(config);
-	/*+'?jsoncallback=?'*/
 	
-	jQuery.getJSON(obj.build_url(config),
+	jQuery.getJSON(obj.build_url(config) + '?jsoncallback=?',
 				function(result){
 				
 					obj.debug(result);
