@@ -363,9 +363,8 @@ flaker_c.prototype.parse_comment = function(c){
 		default:
 			var a = obj.options.lang_commented;
 		}
-		
 	
-		return '<li>'+
+		return '<li class="'+subsource+'">'+
 		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
 		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
 		'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
