@@ -124,8 +124,9 @@ flaker_c.prototype.run = function(){
 					/*let's start building things up!*/
 					obj.show_flaker_button();
 					
-					obj.get_list();
 					obj.get_form();
+					obj.get_list();
+					
 					
 					obj.visTrigger(obj.scope);
 				}
