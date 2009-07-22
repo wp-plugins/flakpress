@@ -34,7 +34,7 @@ function flaker_c(options){
 		sort : "asc",
 		height: "auto",
 		bg : "#fff",
-		
+		timestamp : 0,
 		lang_success : "komentarz został dodany",
 		lang_commented : "skomentował",
 		lang_quoted : "cytował" };
@@ -109,7 +109,8 @@ flaker_c.prototype.run = function(){
 	var obj = this;
 	var config = {type:'url2hash',
 							url:this.UID,
-							title:this.fencode(this.options.title)};
+							title:this.fencode(this.options.title),
+							timestamp:this.options.timestamp};
 							
 	this.debug(config);
 	
@@ -371,10 +372,7 @@ flaker_c.prototype.get_list = function(){
 	var obj = this;	
 	
 	
-	var container = jQuery("<ol></ol>");
-	this.scope.append(container);
 	
-	this.refs["container"] = container;
 	
 	if(typeof(this.options.datasource)=="undefined"){
 		this.debug("local datasource not found!");
@@ -450,7 +448,8 @@ flaker_c.prototype.write_list_of_comments = function(json){
 		this.debug("datasource parsing completed");
 		this.debug(datasource);
 		
-		var container = this.refs["container"];
+		var container = jQuery("<ol></ol>");
+		this.scope.append(container);
 		
 		if(this.options.height == 'auto'){
 			if(datasource.length > 3){

@@ -3,7 +3,7 @@
 	Plugin Name: flakpress
 	Plugin URI: http://blog.flaker.pl/flakpress
 	Description: Plugin wyświetla reakcje na twoje posty i pozwala komentować w serwisie Flaker.pl, magic by netguru
-	Version: 0.3
+	Version: 0.4
 */
 
 
@@ -122,6 +122,10 @@ function flaker_c_insert_code($html) {
     }
     if(!empty($post->ID)){
       $conf["url"] = get_permalink($post->ID);
+    }
+    
+    if(!empty($post->post_date_gmt)){
+      $conf["timestamp"] = strtotime($post->post_date_gmt);
     }
   
     $conf["target"] = "#flaker_c_container_".$post->ID;
