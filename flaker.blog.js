@@ -19,7 +19,7 @@ function flaker_c(options){
 	this.likes = [];
 	this.refs = {};
 	this.host = document.location.host;
-	this.datasource = {};
+	this.datasource = [];
 	this.elements = 0;
 	
 	var defaults = {
@@ -44,12 +44,8 @@ function flaker_c(options){
 		lang_commented : "skomentował",
 		lang_quoted : "cytował" };
 		
-	this.options = jQuery.extend(defaults, options);	
-	this.scope = jQuery(this.options.target);
+	this.options = jQuery.extend(defaults, options);
 	this.UID = this.fencode(this.options.url);
-	this.options.form_width = this.correct_sizes(this.options.form_width);
-	this.options.height = this.correct_sizes(this.options.height);
-	
 	if(document.location.host == 'wp.flaker.pl'){
 		this.API_URL = 'http://staging.flaker.pl/api';
 	}else{
@@ -61,9 +57,14 @@ function flaker_c(options){
 flaker_c.prototype.blog_init = function(){
 	var obj = this;
 	
+	this.scope = jQuery(obj.options.target);
+	this.options.form_width = this.correct_sizes(this.options.form_width);
+	this.options.height = this.correct_sizes(this.options.height);
+	
 	this.debug(this.options);
 	
 	if(this.scope.length){
+		this.debug("target found - init");
 		this.show_widget();
 		this.show_heading();
 		this.run();
@@ -75,25 +76,22 @@ flaker_c.prototype.blog_init = function(){
 
 flaker_c.prototype.frame_init = function(){
 	var obj = this;
+	this.debug("frame init");
 	this.visTrigger();
 	this.bind_form();
 }
 
 flaker_c.prototype.show_widget = function(){
 	var obj = this;
-	
 	this.scope.addClass(obj.options.widget_class);
-	this.scope.css({"width": obj.options.form_width});
-	
+	this.scope.css({width : obj.options.form_width, 
+				backgroundColor : obj.options.bg});
 }
-
-
 
 flaker_c.prototype.show_heading = function(){
 
 	var obj = this;
-	
-	
+
 	var button = this.build_button({
 		b_class : "with_icon flaker",
 		b_text : "REAKCJE NA FLAKER.PL",
@@ -125,22 +123,14 @@ flaker_c.prototype.run = function(){
 					jQuery("a.flaker",obj.refs["heading"]).attr('href',obj.BASE_URL + "t/" + obj.entry_hash);
 					
 					/*let's start building things up!*/
+
 					obj.show_flaker_button();
-					
 					obj.get_form();
-					obj.get_list();
-					
-					
+					obj.get_data();	
 					obj.visTrigger(obj.scope);
 				}
 	);
 }
-
-flaker_c.prototype.get_gen_id = function(){
-	var id= this.options.target.replace(/#/gi,"");
-	return "flaker_c_"+id;
-}
-
 
 
 flaker_c.prototype.show_flaker_button = function(){
@@ -171,6 +161,223 @@ flaker_c.prototype.show_flaker_button = function(){
 	}
 }
 
+
+flaker_c.prototype.get_form = function(){
+	var obj = this;
+	var target = jQuery(obj.options.target);
+	
+	if(this.options.form_add){
+	
+		var button = jQuery("<input />");
+		button.addClass("fright vistrigger {target:'#"+obj.get_gen_id()+"'}");
+		button.val("dodaj reakcję");
+		button.attr({type:"submit"});
+			
+		//var button_holder = obj.embed_button(button, {h_class : 'flaker_c_bottom'}) ;
+		//this.scope.append(button_holder);
+	
+		this.refs["heading"].append(button);
+		
+		var iframe = jQuery("<iframe ></iframe>");
+		iframe.attr({id : obj.get_gen_id(),
+					name : obj.get_gen_id(),
+					scrolling: 'auto'					
+					});
+		iframe.addClass(obj.options.form_class);
+		iframe.attr('src',  obj.build_url({
+				type:'commentsform', 
+				hash:obj.entry_hash, 				
+				entry_id:obj.entry_id,
+				format:'html'}));
+		iframe.css({'width':obj.options.form_width});
+		target.append(iframe);
+		
+		this.refs["iframe"] = iframe;
+		this.refs["commentbutton"] = button;
+	}
+}
+
+
+
+
+flaker_c.prototype.get_data = function(){
+	var obj = this;	
+	
+	
+	if(typeof(this.options.datasource)=="undefined"){
+		this.debug("local datasource not found!");
+		jQuery.getJSON(obj.build_url({type:'flakosfera', 
+									tag: obj.entry_hash, 
+									avatars : '32px'})+'?jsoncallback=?',
+					function(result){
+						obj.debug("results fetched - parsing");
+						obj.parse_json(result);
+					}
+		);
+	}else{
+		this.debug("using api datasource");
+		this.parse_json(this.options.datasource);
+		
+	}
+	
+}
+
+flaker_c.prototype.parse_json = function(json){
+	var obj = this;
+	var datasource = [];	
+
+	if(typeof(json.entries)!="undefined"){
+	
+		var entries  = json.entries;
+	
+		jQuery.each(entries, function(i, entry){
+			obj.debug("parsing entry: id="+entry.id+ " source="+entry.source+" subsource="+entry.subsource);
+			
+			switch(entry.subsource){
+			
+				case 'flaker_trakermerged':
+					obj.debug("parsing flaker_trakermerged - comments");
+					datasource = jQuery.merge(datasource, entry.comments);	
+				break;
+				case 'internal_traker':
+					obj.debug("parsing internal_traker");
+					obj.traker.push(entry.user);	
+				break;
+				case 'rss_entry':
+					obj.debug("parsing rss_entry - comments");
+					datasource = jQuery.merge(datasource, entry.comments);
+				break;
+				case 'flaker_external':
+					obj.debug("parsing flaker_external - comments");
+					datasource = jQuery.merge(datasource, entry.comments);
+				break;
+				default:
+					datasource.push(entry);
+					datasource = jQuery.merge(datasource, entry.comments);	
+			}
+			
+		});
+			
+		this.debug("datasource parsing completed");
+		this.debug(datasource);
+		this.build_list_of_comments(datasource);
+	}
+}
+
+flaker_c.prototype.build_list_of_comments = function(datasource){
+
+	var obj = this;
+		
+	if(datasource.length){
+	
+		var container = jQuery("<ol></ol>");
+				
+		if(this.options.height == 'auto'){
+			if(datasource.length > 3){
+				container.css({height :  "150px",
+							overflow: 'auto'
+						});
+			}else{
+				container.css({height : "auto" ,
+						   overflow: 'visible'
+						});
+			}
+		}else{
+			container.css({height : obj.options.height, 
+						   overflow: 'auto'
+						  });
+		}
+		
+		container.attr({"class":obj.options.list_class});
+		container.css({"width": obj.options.form_width});
+		
+		this.scope.append(container);
+		
+	
+		jQuery.each(datasource,function(i,c){
+			container.append( obj.parse_comment(c) );
+		});
+		
+		
+		this.parse_trakers();
+		this.parse_likes();
+		
+		this.refs["container"] = container;
+		this.refs["traker"] = t;
+	
+	}else{
+		this.debug("error: comments parsing failed!");
+	}
+	
+}
+
+
+flaker_c.prototype.parse_comment = function(c){
+
+	var obj = this;
+	
+	/*if comments is not a comment lets skip it!*/
+	
+	var subsource = (typeof(c.subsource)!="undefined" ? c.subsource : '');
+	
+	if(subsource == 'internal_favorited'){
+		this.likes.push(c);
+	}else{
+	
+		var l = c.user.login;
+		var av = '<img src="'+this.change_avatar(c.user.avatar, 32)+'" alt="avatar" />';
+		var t = c.text;
+
+		switch (c.subsource){
+		case 'flaker_link':
+			var a = obj.options.lang_quoted;
+		break;
+		default:
+			var a = obj.options.lang_commented;
+		}
+		
+		
+		var d = c.datetime;
+		return '<li>'+
+		'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
+		'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
+		'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
+		'<div class="fleft flaker_c_text">'+t+'</div>'+
+		'</li>';
+	}
+	
+	
+	
+}
+
+flaker_c.prototype.parse_trakers = function(){
+	
+	var obj = this;
+	this.debug("trakers found: " + obj.traker.length);
+	
+	if(obj.traker.length > 0){
+			obj.debug("append traker");
+			obj.debug(obj.traker);
+			var t = jQuery("<li></li>");
+			t.addClass("visitors traker");
+			jQuery.each(obj.traker,function(i,u){			
+	t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar, 16)+"' alt='"+u.login+"' /></a>");
+			});
+			this.refs["container"].append(t);
+	}
+	
+}
+
+flaker_c.prototype.parse_likes = function(likes){
+	var obj = this;
+	this.debug("likes found: " + this.likes.length);
+	
+	if(this.options.show_favs){
+	
+	
+	}
+}
+
 flaker_c.prototype.show_bookmarklet = function(){
 	var obj = this;
 	e=document.createElement('script');
@@ -178,6 +385,11 @@ flaker_c.prototype.show_bookmarklet = function(){
 	e.setAttribute('src','http://flaker.pl/static/js/flaker/share.js?url='+obj.UID);
 	document.body.appendChild(e);
 }
+
+/****************************************************/
+/***************   HELPER FUNCTIONS   ***************/
+/****************************************************/
+
 
 flaker_c.prototype.parse_params = function(scriptname){
 	var obj = this;
@@ -192,11 +404,19 @@ flaker_c.prototype.parse_params = function(scriptname){
 	});
 }
 
+flaker_c.prototype.get_gen_id = function(){
+	var id= this.options.target.replace(/#/gi,"");
+	return "flaker_c_"+id;
+}
+
+
 flaker_c.prototype.debug = function(msg){
 	var obj = this;
 	if(typeof(console)!="undefined" && parseInt(this.options.debug)){
-		console.log("output from: " + arguments.callee.caller.toString());
 		console.log(msg);
+		if(typeof(msg) == "object" || typeof(msg) == "function"){	
+			console.log("output from: " + arguments.callee.caller.toString());
+		}
 	}
 }
 
@@ -209,8 +429,6 @@ flaker_c.prototype.build_url = function(options){
 	jQuery.each(options,function(k,v){
 	  url += '/'+k+':'+v;
 	});
-	
-	
 	return url;
 }
 
@@ -228,14 +446,14 @@ flaker_c.prototype.flashmsg = function(msg){
 	var msg = msg || "";
 	
 	var flash = jQuery('<div></div>');
-	flash.addClass("fullw msg");
+	flash.addClass("flashmsg");
 	flash.html(msg);
 	
 	jQuery(".flaker_c_form").prepend(flash);
 	
 	if(!this.debug){
 		setTimeout(function(){
-			flash.hide("slow");
+			flash.hide("slow").remove();
 		}, 2000);
 	}
 }
@@ -295,22 +513,6 @@ flaker_c.prototype.visTrigger = function(scope){
 }
 
 
-flaker_c.prototype.embed_button = function(button, options){
-
-	var obj = this;
-	
-	var defaults = {h_class:''}
-	var options = jQuery.extend(defaults, options);
-	
-	var button_holder = jQuery('<div></div>');
-	button_holder.addClass("fullw");
-	button_holder.addClass(options.h_class);
-	button_holder.append(button);
-
-	return button_holder;
-}
-
-
 flaker_c.prototype.build_button = function(options, add_flaker_logo){
 	var obj = this;
 	
@@ -331,68 +533,22 @@ flaker_c.prototype.build_button = function(options, add_flaker_logo){
 }
 
 
-flaker_c.prototype.get_form = function(){
+flaker_c.prototype.embed_button = function(button, options){
+
 	var obj = this;
-	var target = jQuery(obj.options.target);
 	
-	if(this.options.form_add){
+	var defaults = {h_class:''}
+	var options = jQuery.extend(defaults, options);
 	
-		var button = jQuery("<input />");
-		button.addClass("fright vistrigger {target:'#"+obj.get_gen_id()+"'}");
-		button.val("dodaj reakcję");
-		button.attr({type:"submit"});
-			
-		//var button_holder = obj.embed_button(button, {h_class : 'flaker_c_bottom'}) ;
-		//this.scope.append(button_holder);
-	
-		this.refs["heading"].append(button);
-		
-		
-		var iframe = jQuery("<iframe ></iframe>");
-		iframe.attr({id : obj.get_gen_id(),
-					name : obj.get_gen_id(),
-					scrolling: 'auto'					
-					});
-		iframe.addClass(obj.options.form_class);
-		iframe.attr('src',  obj.build_url({
-				type:'commentsform', 
-				hash:obj.entry_hash, 				
-				entry_id:obj.entry_id,
-				format:'html'}));
-		iframe.css({'width':obj.options.form_width});
-		target.append(iframe);
-		
-		this.refs["iframe"] = iframe;
-		this.refs["commentbutton"] = button;
-	}
+	var button_holder = jQuery('<div></div>');
+	button_holder.addClass("fullw");
+	button_holder.addClass(options.h_class);
+	button_holder.append(button);
+
+	return button_holder;
 }
 
 
-
-
-flaker_c.prototype.get_list = function(){
-	var obj = this;	
-	
-	
-	
-	
-	if(typeof(this.options.datasource)=="undefined"){
-		this.debug("local datasource not found!");
-		jQuery.getJSON(obj.build_url({type:'flakosfera', 
-									tag: obj.entry_hash, 
-									avatars : '32px'})+'?jsoncallback=?',
-					function(result){
-						obj.debug(result);
-						obj.write_list_of_comments(result);
-					}
-		);
-	}else{
-		this.debug("using api datasource");
-		this.write_list_of_comments(this.options.datasource);
-		
-	}
-	
-}
 
 flaker_c.prototype.change_avatar = function(path, size){
 	if(parseInt(size) > 16){
@@ -402,120 +558,16 @@ flaker_c.prototype.change_avatar = function(path, size){
 	}
 }
 
-flaker_c.prototype.parse_comment = function(c){
-	var obj = this;
-	var l = c.user.login;
-	var av = '<img src="'+this.change_avatar(c.user.avatar, 32)+'" alt="avatar" />';
-	var t = c.text;
-
-	switch (c.subsource){
-	case 'flaker_link':
-		var a = obj.options.lang_quoted;
-	break;
-	default:
-		var a = obj.options.lang_commented;
-	}
-	
-	
-	var d = c.datetime;
-	return '<li>'+
-	'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
-	'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
-	'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
-	'<div class="fleft flaker_c_text">'+t+'</div>'+
-	'</li>';
-}
-
-flaker_c.prototype.write_list_of_comments = function(json){
-	var obj = this;
-	var datasource = [];	
-
-	if(typeof(json.entries)!="undefined"){
-	
-		var entries  = json.entries;
-	
-		jQuery.each(entries, function(i, entry){
-			obj.debug("parsing entry");
-			
-			switch(entry.subsource){
-			
-				case 'flaker_trakermerged':
-					obj.debug("parsing flaker_trakermerged - comments");
-					datasource = jQuery.merge(datasource, entry.comments);	
-				break;
-				case 'internal_traker':
-					obj.debug("parsing internal_traker");
-					obj.traker.push(entry.user);	
-				break;			
-				case 'rss_entry':
-					obj.debug("parsing rss_entry - comments");
-					datasource = jQuery.merge(datasource, entry.comments);
-				break;
-				case 'flaker_external':
-					obj.debug("parsing flaker_external - comments");
-					datasource = jQuery.merge(datasource, entry.comments);
-				break;
-				default:
-					datasource.push(entry);
-					datasource = jQuery.merge(datasource, entry.comments);	
-			}
-			
-		});
-			
-		this.debug("datasource parsing completed");
-		this.debug(datasource);
-		
-		var container = jQuery("<ol></ol>");
-		this.scope.append(container);
-		
-		if(this.options.height == 'auto'){
-			if(datasource.length > 3){
-				container.css({height :  "150px",
-						   overflow: 'auto'
-						});
-			}else{
-				container.css({height : "auto" ,
-						   overflow: 'visible'
-						});
-			}
-		}else{
-			container.css({height : obj.options.height, 
-						   overflow: 'auto'
-						  });
-		}
-		
-		container.attr({"class":obj.options.list_class});
-		container.css({"width": obj.options.form_width});
-	
-	
-		jQuery.each(datasource,function(i,c){
-			container.append( obj.parse_comment(c) );
-		});
-		
-		if(obj.traker.length > 0){
-			obj.debug("append traker");
-			obj.debug(obj.traker);
-			var t = jQuery("<li></li>");
-			t.addClass("traker");
-			jQuery.each(obj.traker,function(i,u){			
-	t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar,16)+"' alt='"+u.login+"'/></a>");
-			});
-			container.append(t);
-		}
-	
-	
-	}else{
-		this.debug("error: comments parsing failed!");
-	}
-	
-}
-
 
 flaker_c.prototype.fencode = function(str){
 		var string = Base64.encode(str);			
 		string = string.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ",");
 		return string;
 }
+
+
+
+
 
 
 var Base64 = { 
