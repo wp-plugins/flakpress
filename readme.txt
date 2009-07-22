@@ -4,7 +4,7 @@ Donate link: http://flaker.pl/
 Tags: comments, share
 Requires at least: 2.7.1
 Tested up to: 2.8.2
-Stable tag: 0.3
+Stable tag: 0.4
 
 Flakpress enables displaying related comments from flaker.pl website.
 
@@ -34,6 +34,10 @@ At this time - no!
 the directory of the stable readme.txt, so in this case, `/tags/4.3/screenshot-1.png` (or jpg, jpeg, gif)
 
 == Changelog ==
+
+= 0.4 =
+
+* fixed problem with older posts
 
 = 0.3 = 
 
