@@ -15,7 +15,12 @@ function flaker_c(options){
 	this.BASE_URL = 'http://flaker.pl/';
 	this.entry_hash = false;
 	this.entry_id = 0;
-	
+	this.traker = [];
+	this.likes = [];
+	this.refs = {};
+	this.host = document.location.host;
+	this.datasource = {};
+	this.elements = 0;
 	
 	var defaults = {
 		url : document.location.href, 
@@ -42,11 +47,6 @@ function flaker_c(options){
 	this.options = jQuery.extend(defaults, options);	
 	this.scope = jQuery(this.options.target);
 	this.UID = this.fencode(this.options.url);
-	this.refs = {};
-	this.host = document.location.host;
-	this.datasource = {};
-	this.elements = 0;
-	
 	this.options.form_width = this.correct_sizes(this.options.form_width);
 	this.options.height = this.correct_sizes(this.options.height);
 	
@@ -97,7 +97,7 @@ flaker_c.prototype.show_heading = function(){
 	var button = this.build_button({
 		b_class : "with_icon flaker",
 		b_text : "REAKCJE NA FLAKER.PL",
-		b_url: "http://flaker.pl"});
+		b_url: "http://flaker.pl/"});
 	
 	var button_holder = obj.embed_button(button, {h_class : 'flaker_c_heading'}) ;
 
@@ -121,6 +121,8 @@ flaker_c.prototype.run = function(){
 					
 					obj.entry_id = result.entry_id;
 					obj.entry_hash = result.entry_hash;
+					
+					jQuery("a.flaker",obj.refs["heading"]).attr('href',obj.BASE_URL + "t/" + obj.entry_hash);
 					
 					/*let's start building things up!*/
 					obj.show_flaker_button();
@@ -201,7 +203,7 @@ flaker_c.prototype.debug = function(msg){
 
 flaker_c.prototype.build_url = function(options){
 	var obj = this;
-	var defaults = {type:"commentslist", format:"json", comments: true};
+	var defaults = {type:"commentslist", format:"json", comments: true, limit: 100};
 	var options = jQuery.extend(defaults,options);
 	var url = this.API_URL;
 	jQuery.each(options,function(k,v){
@@ -392,10 +394,18 @@ flaker_c.prototype.get_list = function(){
 	
 }
 
+flaker_c.prototype.change_avatar = function(path, size){
+	if(parseInt(size) > 16){
+		return path.replace(/_(16|32|50|80)\.jpeg/gi, "_"+size+".jpeg");
+	}else{
+		return path;
+	}
+}
+
 flaker_c.prototype.parse_comment = function(c){
 	var obj = this;
 	var l = c.user.login;
-	var av = '<img src="'+c.user.avatar.replace(/_50\.jpeg/gi, "_32.jpeg")+'" alt="avatar" />';
+	var av = '<img src="'+this.change_avatar(c.user.avatar, 32)+'" alt="avatar" />';
 	var t = c.text;
 
 	switch (c.subsource){
@@ -409,17 +419,16 @@ flaker_c.prototype.parse_comment = function(c){
 	
 	var d = c.datetime;
 	return '<li>'+
-	'<span class="fleft flaker_c_avatar"><a href="'+this.BASE_URL+l+'">'+av+ '</a></span> '+
-	'<span class="fleft flaker_c_author"><a href="'+this.BASE_URL+l+'">'+l+'</a> '+a+'</span> ' +
-	'<span class="fright flaker_c_date"><a href="'+this.BASE_URL+"f/"+'">'+d+'</a></span> ' +
+	'<span class="fleft flaker_c_avatar"><a href="'+c.user.url+'">'+av+ '</a></span> '+
+	'<span class="fleft flaker_c_author"><a href="'+c.user.url+'">'+l+'</a> '+a+'</span> ' +
+	'<span class="fright flaker_c_date"><a href="'+c.permalink+'">'+d+'</a></span> ' +
 	'<div class="fleft flaker_c_text">'+t+'</div>'+
 	'</li>';
 }
 
 flaker_c.prototype.write_list_of_comments = function(json){
 	var obj = this;
-	var datasource = [];
-		
+	var datasource = [];	
 
 	if(typeof(json.entries)!="undefined"){
 	
@@ -428,14 +437,22 @@ flaker_c.prototype.write_list_of_comments = function(json){
 		jQuery.each(entries, function(i, entry){
 			obj.debug("parsing entry");
 			
-			switch(entry.user.login){
+			switch(entry.subsource){
 			
-				case 'traker':
-					obj.debug("parsing traker comments");
+				case 'flaker_trakermerged':
+					obj.debug("parsing flaker_trakermerged - comments");
 					datasource = jQuery.merge(datasource, entry.comments);	
 				break;
-				case obj.host:
-					obj.debug("parsing host-user");
+				case 'internal_traker':
+					obj.debug("parsing internal_traker");
+					obj.traker.push(entry.user);	
+				break;			
+				case 'rss_entry':
+					obj.debug("parsing rss_entry - comments");
+					datasource = jQuery.merge(datasource, entry.comments);
+				break;
+				case 'flaker_external':
+					obj.debug("parsing flaker_external - comments");
 					datasource = jQuery.merge(datasource, entry.comments);
 				break;
 				default:
@@ -474,6 +491,17 @@ flaker_c.prototype.write_list_of_comments = function(json){
 		jQuery.each(datasource,function(i,c){
 			container.append( obj.parse_comment(c) );
 		});
+		
+		if(obj.traker.length > 0){
+			obj.debug("append traker");
+			obj.debug(obj.traker);
+			var t = jQuery("<li></li>");
+			t.addClass("traker");
+			jQuery.each(obj.traker,function(i,u){			
+	t.append("<a href='"+u.url+"'><img src='"+obj.change_avatar(u.avatar,16)+"' alt='"+u.login+"'/></a>");
+			});
+			container.append(t);
+		}
 	
 	
 	}else{
