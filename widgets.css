@@ -162,6 +162,7 @@ div.tor { display: none; }
 
 
 .flaker_c .flaker_c_list li.likings .flaker_c_likings {display: block; float:none;}
+.flaker_c .flaker_c_list li.visitors .flaker_c_visitors {display: block; float:none;}
 
 
 .flaker_c .with_icon {padding-left: 20px; background-repeat: no-repeat ; }
