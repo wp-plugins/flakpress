@@ -1,0 +1,198 @@
+
+
+
+
+.flaker_widget {float: left; margin: 0; width: 250px; background: #fff; font: 12px normal "Lucida Grande",sans-serif; padding:0; width: 200px;}
+
+.flaker_widget * {margin:0px; padding:0px; border: none;}
+
+.flaker_widget a {color: inherit; text-decoration: none;}
+
+
+
+.flaker_widget .flaker_widget_user { float: left; margin: 0; padding: 0; width: 250px;}
+.flaker_widget .flaker_widget_user_avatar {float: left; width: 50px;}
+.flaker_widget .flaker_widget_user_login {float: left; width: 150px; margin: 0 0 0 20px; padding: 0; line-height: 50px; color: inherit;}
+
+.flaker_widget .flaker_widget_main {float: left; width: 250px; background: #f6f6f6 url(http://flaker.pl/static/images/flaker/d.gif) left 0 no-repeat;}
+
+
+.flaker_widget .flaker_widget_entries { float: left; margin: 10px 3px 3px; list-style: none;
+	padding: 8px!important;
+}
+.flaker_widget .flaker_widget_entry {float: left; margin: 0 0 5px 0; width: auto; list-style: none; line-height: 16px;}
+.flaker_widget .flaker_widget_entry span { background-position: 2px 1px; display: block; padding-left: 27px; line-height: 18px; font-size: 8pt; color: #666; display:block; }
+.flaker_widget .flaker_widget_entry span.h { background: none; display: inline; padding: 0px; line-height: normal; font-size: inherit; color: inherit;}
+
+
+
+.flaker_widget .flaker_widget_entry_title { font-size: 9pt;}
+
+
+.flaker_widget .flaker_widget_entry_text { font-size: 8pt;}
+.flaker_widget .flaker_widget_entry_text a { color: #333!important; text-decoration: none;}
+.flaker_widget .flaker_widget_entry_text a.external { text-decoration: underline; float:right;}
+
+.flaker_widget .flaker_widget_entry_text .merged {padding: 0px; margin: 0px;}
+
+
+
+
+.allegro { background-image: url("http://flaker.pl/static/images/flaker/websites/allegro.gif");  }
+.blip { background-image: url("http://flaker.pl/static/images/flaker/websites/blip.gif") ; }
+.twitter { background-image: url("http://flaker.pl/static/images/flaker/websites/twitter.gif") ; }
+.nasza-klasa { background-image: url("http://flaker.pl/static/images/flaker/websites/nasza-klasa.gif") ; }
+.blogpl { background-image: url("http://flaker.pl/static/images/flaker/websites/blogpl.gif") ; }
+.blox { background-image: url("http://flaker.pl/static/images/flaker/websites/blox.gif") ; }
+.delicious { background-image: url("http://flaker.pl/static/images/flaker/websites/delicious.gif") ; }
+.flaker { background-image: url("http://flaker.pl/static/images/flaker/websites/flaker.gif") ; }
+.flickr { background-image: url("http://flaker.pl/static/images/flaker/websites/flickr.gif") ; }
+.fotka { background-image: url("http://flaker.pl/static/images/flaker/websites/fotka.gif") ; }
+.garnek { background-image: url("http://flaker.pl/static/images/flaker/websites/garnek.gif") ; }
+.greader { background-image: url("http://flaker.pl/static/images/flaker/websites/greader.gif") ; }
+.grono { background-image: url("http://flaker.pl/static/images/flaker/websites/grono.gif") ; }
+.jogger { background-image: url("http://flaker.pl/static/images/flaker/websites/jogger.gif") ; }
+.lastfm { background-image: url("http://flaker.pl/static/images/flaker/websites/lastfm.gif") ; }
+.linkologia { background-image: url("http://flaker.pl/static/images/flaker/websites/linkologia.gif") ; }
+.onet { background-image: url("http://flaker.pl/static/images/flaker/websites/onet.gif") ; }
+.picasa { background-image: url("http://flaker.pl/static/images/flaker/websites/picasa.gif") ; }
+.pinger { background-image: url("http://flaker.pl/static/images/flaker/websites/pinger.gif"); }
+.youtube { background-image: url("http://flaker.pl/static/images/flaker/websites/youtube.gif") ; }
+.rss { background-image: url("http://flaker.pl/static/images/flaker/websites/rss.gif") ; }
+.wykop { background-image: url("http://flaker.pl/static/images/flaker/websites/wykop.gif") ; }
+.comments { background-image: url("http://flaker.pl/static/images/flaker/comment.gif") ; }
+.traker { background-image: url("http://flaker.pl/static/images/flaker/websites/tracker.gif") ; }
+.trackerpermissions { background-image: url("http://flaker.pl/static/images/flaker/websites/tracker.gif") ; }
+.favorited { background-image: url("http://flaker.pl/static/images/flaker/websites/love.gif"); }
+.favorites { background-image: url("http://flaker.pl/static/images/flaker/websites/love.gif"); }
+.finansowo { background-image: url("http://flaker.pl/static/images/flaker/websites/finansowo.gif"); }
+.friends { background-image: url("http://flaker.pl/static/images/flaker/websites/friends.gif"); }
+.love { background-image: url("http://flaker.pl/static/images/flaker/love.gif"); }
+
+.allegro, 
+.blip, 
+.twitter, 
+.nasza-klasa, 
+.blogpl, 
+.blox, 
+.delicious, 
+.flaker, 
+.flickr, 
+.fotka, 
+.garnek, 
+.greader, 
+.grono, 
+.jogger, 
+.lastfm, 
+.linkologia, 
+.onet, 
+.picasa, 
+.pinger, 
+.youtube, 
+.rss, 
+.wykop, 
+.comments, 
+.traker, 
+.trackerpermissions, 
+.favorited, 
+.favorites, 
+.finansowo, 
+.friends, 
+.love {background-repeat: no-repeat; background-position: center left; }
+
+
+
+/*TRAKLOG*/
+
+
+.flaker_widget_traker {background:#fff;padding:0;margin:10px 0 10px 0;}
+.flaker_widget_traker a {padding:1px;margin:0;text-decoration:none;border:none;outline:none;}
+.flaker_widget_traker a img {padding:0;margin:0;border:none;outline:none;}
+
+div.tor { display: none; }
+
+.with_icon {padding-left: 20px; background-repeat: no-repeat ; }
+
+
+/*COMMENTS WIDGET*/
+
+
+.flaker_c { margin: 10px 0 10px 0; float:left; border: 1px solid #ddd; }
+.flaker_c * { padding:0; margin:0;}
+.flaker_c a {color: #0066CC;}
+
+.flaker_c .fleft {float:left; overflow:visible; display:block;}
+.flaker_c .fright {float:right; overflow:visible; display:block;}
+.flaker_c .fullw {width: 100%;float:left; font-size:10pt;}
+
+
+.flaker_c .flaker_c_button {float:left; padding: 3px 3px 3px 22px; font-size: 8pt;}
+
+.flaker_c .flaker_c_heading {width: 100%; float:left; font-weight: bold; color: #333; background-color: #eaeaea; }
+.flaker_c .flaker_c_heading a {color: inherit; margin-left: 5px; font-size:9pt;}
+
+.flaker_c .flaker_c_heading .fright {margin: 2px 10px 2px 0; font-size: 8pt;}
+
+.flaker_c .flaker_c_list {list-style-type:none; width: 100%; color:#000;font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; float:left; padding:0; margin: 10px 0; overflow: hidden;}
+.flaker_c .flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3;}
+.flaker_c .flaker_c_list li .fleft {float:left; overflow:visible; display:block;}
+
+.flaker_c .flaker_c_list span {line-height: normal;}
+.flaker_c .flaker_c_list span.flaker_c_avatar {font-weight:bold;  margin-right: 10px; }
+.flaker_c .flaker_c_list span.flaker_c_avatar a {text-decoration: none; color: #000;}
+.flaker_c .flaker_c_list span.flaker_c_avatar a img {text-decoration: none; border:none;}
+
+.flaker_c .flaker_c_list span.flaker_c_author { font-family: verdana, sans-serif; font-size: 8pt;  width: 200px; line-height:100%; margin: -2px 0 5px 0; color: #ccc;}
+.flaker_c .flaker_c_list span.flaker_c_author a { font-weight:bold; text-decoration: none; color: #000;}
+
+.flaker_c .flaker_c_list span.flaker_c_date {font-size: 7pt; white-space:nowrap; float:right; margin: -2px 8px 0 0;}
+.flaker_c .flaker_c_list span.flaker_c_date a {color: #ccc;}
+
+.flaker_c .flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
+.flaker_c .flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC;}
+
+.flaker_c .flaker_c_list li .reactions {}
+
+
+
+.flaker_c .flaker_c_list li.internal_comment {}
+.flaker_c .flaker_c_list li.internal_comment span {margin-top: 0px; width: auto; line-height: normal;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_author {margin-right: 5px;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {float:left; }
+
+
+.flaker_c .flaker_c_list li.likings .flaker_c_likings {display: block; float:none;}
+
+
+.flaker_c .with_icon {padding-left: 20px; background-repeat: no-repeat ; }
+
+.flaker_c .flaker_c_list li span.userlist {float:left; margin: 5px 0 0 20px;}
+.flaker_c .flaker_c_list li span.userlist a {margin-right: 1px;}
+
+
+.flaker_c_form {width:100%;  margin:0; padding:0; border:none; font-family: sans-serif; font-size: 10pt; background-color:#fff;}
+
+iframe.flaker_c_form { overflow:hidden; display:none; min-height: 200px; height: 220px; }
+
+.flaker_c_form form {width:100%; float:left; background-color: #f6f6f6;}
+.flaker_c_form form fieldset {width:90%; border:none; float:left; }
+.flaker_c_form form legend {width:100%;float:left; }
+.flaker_c_form form legend a.button { text-decoration: none; color:#000; }
+.flaker_c_form form textarea {width: 100%;float:left; margin-top: 10px;}
+.flaker_c_form form .formPart { float:left; width: 100%; }
+.flaker_c_form form .formPart input { width: 100%; }
+.flaker_c_form form .formSubmit {  float:left; width: 100%;  }
+.flaker_c_form form .formSubmit input { float:right;}
+
+.flaker_c_form .msg {background-color: green; margin: 5px; color: #fff;}
+
+#credentials {width:100%; height: auto; float:left; }
+#credentials .formPart { width: 50%; }
+
+#anonymous {width: 100%; height: auto; float:left; display:none; }
+#anonymous .formPart { width: 50%; }
+
+
+
+.flaker_c_form .rightcol label {margin-left: 5px;}
+.flaker_c_form .rightcol input {margin-left: 5px;}
