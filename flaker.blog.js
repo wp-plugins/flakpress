@@ -91,6 +91,9 @@ flaker_c.prototype.deconstruct = function(){
 	this.debug(obj.options);
 	this.debug(obj.refs);
 	this.debug(this.datasource);
+	
+	
+	jQuery("li:last", obj.refs["container"]).addClass("last");
 }
 
 flaker_c.prototype.show_widget = function(){
@@ -466,8 +469,8 @@ flaker_c.prototype.build_userlist = function(source){
 		jQuery.each(source, function(i, u){
 			
 			if(jQuery.inArray(u.user.login, users) < 0){
-					html += "<a href='"+u.user.url+"'>"+
-					"<img src='"+obj.change_avatar(u.user.avatar, 16)+"' alt='"+u.user.login+"' />"+
+					html += "<a href='"+u.user.url+"' title='"+u.user.login+"'>"+
+					"<img src='"+obj.change_avatar(u.user.avatar, 16)+"' alt='avatar "+u.user.login+"' />"+
 					"</a>";
 			}
 			users.push(u.user.login);

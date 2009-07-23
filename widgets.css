@@ -158,7 +158,7 @@ div.tor { display: none; }
 .flaker_c .flaker_c_list li.internal_comment {}
 .flaker_c .flaker_c_list li.internal_comment span {margin-top: 0px; width: auto; line-height: normal;}
 .flaker_c .flaker_c_list li.internal_comment .flaker_c_author {margin-right: 5px;}
-.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {float:left;}
+.flaker_c .flaker_c_list li.internal_comment .flaker_c_text {float:left; }
 
 
 .flaker_c .flaker_c_list li.likings .flaker_c_likings {display: block; float:none;}
@@ -166,12 +166,13 @@ div.tor { display: none; }
 
 .flaker_c .with_icon {padding-left: 20px; background-repeat: no-repeat ; }
 
-
+.flaker_c .flaker_c_list li span.userlist {float:left; margin: 5px 0 0 20px;}
+.flaker_c .flaker_c_list li span.userlist a {margin-right: 1px;}
 
 
 .flaker_c_form {width:100%;  margin:0; padding:0; border:none; font-family: sans-serif; font-size: 10pt; background-color:#fff;}
 
-iframe.flaker_c_form { overflow:hidden; display:none; }
+iframe.flaker_c_form { overflow:hidden; display:none; min-height: 200px; height: 220px; }
 
 .flaker_c_form form {width:100%; float:left; background-color: #f6f6f6;}
 .flaker_c_form form fieldset {width:90%; border:none; float:left; }

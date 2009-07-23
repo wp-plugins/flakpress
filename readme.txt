@@ -4,7 +4,7 @@ Donate link: http://flaker.pl/
 Tags: comments, share
 Requires at least: 2.7.1
 Tested up to: 2.8.2
-Stable tag: 0.4
+Stable tag: 0.5
 
 Flakpress enables displaying related comments from flaker.pl website.
 
