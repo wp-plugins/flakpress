@@ -2,7 +2,7 @@
 
 
 
-.flaker_widget {float: left; margin: 0; width: 250px; background: #fff; font: 12px normal "Lucida Grande",sans-serif; padding:0; width: 200px;}
+.flaker_widget {float: left; margin: 0; width: auto; background: #fff; font: 12px normal "Lucida Grande",sans-serif; padding:0; width: 200px;}
 
 .flaker_widget * {margin:0px; padding:0px; border: none;}
 
@@ -10,11 +10,11 @@
 
 
 
-.flaker_widget .flaker_widget_user { float: left; margin: 0; padding: 0; width: 250px;}
+.flaker_widget .flaker_widget_user { float: left; margin: 0; padding: 0; width: auto;}
 .flaker_widget .flaker_widget_user_avatar {float: left; width: 50px;}
 .flaker_widget .flaker_widget_user_login {float: left; width: 150px; margin: 0 0 0 20px; padding: 0; line-height: 50px; color: inherit;}
 
-.flaker_widget .flaker_widget_main {float: left; width: 250px; background: #f6f6f6 url(http://flaker.pl/static/images/flaker/d.gif) left 0 no-repeat;}
+.flaker_widget .flaker_widget_main {float: left; width: auto; background: #f6f6f6 url(http://flaker.pl/static/images/flaker/d.gif) left 0 no-repeat;}
 
 
 .flaker_widget .flaker_widget_entries { float: left; margin: 10px 3px 3px; list-style: none;
