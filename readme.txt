@@ -2,7 +2,7 @@
 Contributors: Dominique Stranz, Adam Zygadlewicz
 Donate link: http://flaker.pl/
 Tags: comments, share
-Requires at least: 2.7.1
+Requires at least: 2.0.2
 Tested up to: 2.8.2
 Stable tag: 0.5
 
@@ -35,19 +35,7 @@ the directory of the stable readme.txt, so in this case, `/tags/4.3/screenshot-1
 
 == Changelog ==
 
-= 0.4 =
-
-* fixed problem with older posts
-
-= 0.3 = 
-
-* fixed problem with ajax
-
-= 0.2 = 
-
-* look & feel enhancementes
-
 = 0.1 =
 
-* Initial upload - not available
+* Initial upload
 
