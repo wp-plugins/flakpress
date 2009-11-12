@@ -11,7 +11,7 @@ function flaker_c(options){
 		(function($){$.extend({metadata:{defaults:{type:'class',name:'metadata',cre:/({.*})/,single:'metadata'},setType:function(type,name){this.defaults.type=type;this.defaults.name=name;},get:function(elem,opts){var settings=$.extend({},this.defaults,opts);if(!settings.single.length)settings.single='metadata';var data=$.data(elem,settings.single);if(data)return data;data="{}";if(settings.type=="class"){var m=settings.cre.exec(elem.className);if(m)data=m[1];}else if(settings.type=="elem"){if(!elem.getElementsByTagName)return;var e=elem.getElementsByTagName(settings.name);if(e.length)data=$.trim(e[0].innerHTML);}else if(elem.getAttribute!=undefined){var attr=elem.getAttribute(settings.name);if(attr)data=attr;}if(data.indexOf('{')<0)data="{"+data+"}";data=eval("("+data+")");$.data(elem,settings.single,data);return data;}}});$.fn.metadata=function(opts){return $.metadata.get(this[0],opts);};})(jQuery);
 	}
 	
-	
+	this.READONLY = false;
 	this.BASE_URL = 'http://flaker.pl/';
 	this.entry_hash = false;
 	this.entry_id = 0;
@@ -30,6 +30,7 @@ function flaker_c(options){
 		show_comments : 1,
 		show_reactions : 1,
 		show_visits : 1,
+		show_rss : 0,
 		form_add : true,
 		show_flaker_button : 1,
 		debug : false,
@@ -45,7 +46,7 @@ function flaker_c(options){
 		timestamp : 0,
 		lang_success : "komentarz został dodany",
 		lang_commented : "skomentował",
-		lang_quoted : "cytował" };
+		lang_quoted : "cytował"};
 		
 	this.defaults = defaults;
 	this.options = jQuery.extend(defaults, options);
@@ -131,7 +132,7 @@ flaker_c.prototype.show_heading = function(){
 
 	var button = this.build_button({
 		b_class : "with_icon flaker",
-		b_text : "REAKCJE NA FLAKER.PL",
+		b_text : "Reakcje na Flakerze",
 		b_url: "http://flaker.pl/"});
 	
 	var button_holder = obj.embed_button(button, {h_class : 'flaker_c_heading'}) ;
@@ -143,47 +144,67 @@ flaker_c.prototype.show_heading = function(){
 
 flaker_c.prototype.run = function(){
 	var obj = this;
-	var config = {type:'url2hash',
-							url:this.UID,
-							title:this.fencode(this.options.title),
-							timestamp:this.options.timestamp};
-							
-	this.debug(config);
 	
-	jQuery.getJSON(obj.build_url(config) + '?jsoncallback=?',
-				function(result){
-				
-					obj.debug(result);
+	if(this.entry_hash == false){
+	
+		var config = {type:'url2hash',
+								url:this.UID,
+								title:this.fencode(this.options.title),
+								timestamp:this.options.timestamp};
+								
+		this.debug(config);
+		
+		jQuery.getJSON(obj.build_url(config) + '?jsoncallback=?',
+					function(result){
 					
-					obj.entry_id = result.entry_id;
-					obj.entry_hash = result.entry_hash;
-					
-					jQuery("a.flaker",obj.refs["heading"]).attr('href',obj.BASE_URL + "t/" + obj.entry_hash);
-					
-					/*let's start building things up!*/
+						obj.debug(result);
+						
+						obj.entry_id = result.entry_id;
+						obj.entry_hash = result.entry_hash;
+						
+						/*let's start building things up!*/
 
-					obj.show_flaker_button();
-					obj.get_form();
-					obj.get_data();	
-					obj.visTrigger(obj.scope);
-				}
-	);
+						obj.tasks();
+						
+					}
+		);
+	}else{
+		this.debug("running readonlymode");
+		this.READONLY = true;
+		this.tasks();
+	}					
+	
 }
 
+flaker_c.prototype.tasks = function(){
+
+	var obj = this;
+	jQuery("a.flaker",obj.refs["heading"]).attr('href',obj.BASE_URL + "t/" + obj.entry_hash);
+	this.show_flaker_button();
+	this.get_form();
+	this.get_data();	
+	this.visTrigger(this.scope);
+
+}
 
 flaker_c.prototype.show_flaker_button = function(){
 
+	
 	var obj = this;
 	var target = jQuery(obj.options.target);
 
 	if(this.options.show_flaker_button){
 	
+		var container = jQuery("<div></div>");
+		container.addClass("flaker_c_recommend");
+		
 		var button = this.build_button({
 		b_class : "with_icon flaker",
-		b_text : "Poleć znajomym",
+		b_text : "Poleć ten wpis znajomym",
 		b_url : "http://flaker.pl/add2flaker.php"});
 		
-		target.before(button);
+		container.append(button);
+		target.before(container);
 	
 		button.bind("click", function(e){
 			e.preventDefault();	
@@ -206,15 +227,19 @@ flaker_c.prototype.get_form = function(){
 	
 	if(this.options.form_add){
 	
-		var button = jQuery("<input />");
+		/*var button = jQuery("<input type='submit'/>");
 		button.addClass("fright vistrigger {target:'#"+obj.get_gen_id()+"'}");
-		button.val("dodaj reakcję");
-		button.attr({type:"submit"});
-			
-		//var button_holder = obj.embed_button(button, {h_class : 'flaker_c_bottom'}) ;
-		//this.scope.append(button_holder);
+		button.val("skomentuj wpis na flakerze");
+		*/
+		
 	
-		this.refs["heading"].append(button);
+		var button = this.build_button({
+		b_class : "fullw vistrigger {target:'#"+obj.get_gen_id()+"'}",
+		b_text : "&#8259; dodaj swój komentarz",
+		b_url: "#"});
+			
+			
+		this.scope.append(button);
 		
 		var iframe = jQuery("<iframe ></iframe>");
 		iframe.attr({id : obj.get_gen_id(),
@@ -281,8 +306,19 @@ flaker_c.prototype.parse_json = function(json){
 					obj.debug("parsing internal_traker");
 					obj.traker.push(entry);	
 				break;
+				case 'greader_entry':
+					obj.likes.push(entry);
+					datasource = jQuery.merge(datasource, entry.comments);	
+				break;
+				case 'delicious_link':
+					obj.likes.push(entry);
+					datasource = jQuery.merge(datasource, entry.comments);	
+				break;
 				case 'rss_entry':
 					obj.debug("parsing rss_entry - comments");
+					if(obj.options.show_rss){
+						datasource.unshift(entry);
+					}
 					datasource = jQuery.merge(datasource, entry.comments);
 				break;
 				case 'flaker_external':
@@ -319,10 +355,24 @@ flaker_c.prototype.build_list = function(){
 					   overflow: 'visible'
 					});
 		}
+	}else if (this.options.height == 'full') {
+	
+		container.css({height : "auto" ,
+					   overflow: 'visible'
+					});
+	
 	}else{
-		container.css({height : obj.options.height, 
+		
+		if(datasource.length < 2){
+			container.css({height : 'auto', 
+					   overflow: 'visible'
+					  });
+		}else{
+			container.css({height : obj.options.height, 
 					   overflow: 'auto'
 					  });
+		}
+		
 	}
 	
 	container.attr({"class":obj.options.list_class});
@@ -386,6 +436,9 @@ flaker_c.prototype.build_entry = function(c){
 	
 	switch (c.subsource){
 		case 'flaker_link':
+		case 'blip_status':
+		case 'twitter_status':
+		case 'pinger_status':
 			var action = obj.options.lang_quoted;
 		break;
 		default:

@@ -10,12 +10,11 @@
 
 
 
-.flaker_widget .flaker_widget_user { float: left; margin: 0; padding: 0; width: auto;}
+.flaker_widget .flaker_widget_user { float: left; margin: 0 0 10px 0; padding: 0; width: auto;}
 .flaker_widget .flaker_widget_user_avatar {float: left; width: 50px;}
-.flaker_widget .flaker_widget_user_login {float: left; width: 150px; margin: 0 0 0 20px; padding: 0; line-height: 50px; color: inherit;}
+.flaker_widget .flaker_widget_user_login {float: left; width: 100px; margin: 0 0 0 20px; padding: 0; line-height: 50px; color: inherit; overflow: hidden; }
 
-.flaker_widget .flaker_widget_main {float: left; width: auto; background: #f6f6f6 url(http://flaker.pl/static/images/flaker/d.gif) left 0 no-repeat;}
-
+.flaker_widget .flaker_widget_main {float: left; width: auto; background-color: #f6f6f6; background-image: none;}
 
 .flaker_widget .flaker_widget_entries { float: left; margin: 10px 3px 3px; list-style: none;
 	padding: 8px!important;
@@ -34,8 +33,7 @@
 .flaker_widget .flaker_widget_entry_text a.external { text-decoration: underline; float:right;}
 
 .flaker_widget .flaker_widget_entry_text .merged {padding: 0px; margin: 0px;}
-
-
+.flaker_widget a.original-link {opacity: 0.25; filter:alpha(opacity=25); position:relative; top: 3px; }
 
 
 .allegro { background-image: url("http://flaker.pl/static/images/flaker/websites/allegro.gif");  }
@@ -136,8 +134,21 @@ div.tor { display: none; }
 .flaker_c .flaker_c_heading .fright {margin: 2px 10px 2px 0; font-size: 8pt;}
 
 .flaker_c .flaker_c_list {list-style-type:none; width: 100%; color:#000;font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; float:left; padding:0; margin: 10px 0; overflow: hidden;}
-.flaker_c .flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3;}
+.flaker_c .flaker_c_list li {list-style-type:none; width: 97%; height:auto; float:left; padding: 5px 0 5px 0; margin: 0 0 0 10px; border-bottom:1px solid #f3f3f3; font-size:8pt;}
 .flaker_c .flaker_c_list li .fleft {float:left; overflow:visible; display:block;}
+
+
+
+/*flakpress@flaker hacks*/
+
+.nint .flaker_c .edesc {width: auto;font-size: inherit; line-height: inherit; margin:0; padding: 0;}
+.nint .flaker_c .etext {width: auto;}
+.nint .flaker_c span.h {font-size: inherit; padding:0;}
+.nint .flaker_c span.h a {font-size: inherit;}
+.nint .flaker_c .merged li {margin:0; padding:0;}
+.nint .flaker_c .flaker_c_heading {display:none;}
+/*flakpress@flaker hacks*/
+
 
 .flaker_c .flaker_c_list span {line-height: normal;}
 .flaker_c .flaker_c_list span.flaker_c_avatar {font-weight:bold;  margin-right: 10px; }
@@ -151,7 +162,7 @@ div.tor { display: none; }
 .flaker_c .flaker_c_list span.flaker_c_date a {color: #ccc;}
 
 .flaker_c .flaker_c_list li span.flaker_c_text {font-weight:normal; font-size: 8pt; width: 75%; color:#333; float:left; display:block;}
-.flaker_c .flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC;}
+.flaker_c .flaker_c_list li span.flaker_c_text a {text-decoration: none; color: #0066CC; font-size: inherit;}
 
 .flaker_c .flaker_c_list li .reactions {}
 
@@ -173,15 +184,25 @@ div.tor { display: none; }
 .flaker_c .flaker_c_list li span.userlist a {margin-right: 1px;}
 
 
+
+
+
+.flaker_c_recommend {display:block; text-align: right; margin: 5px 0 5px 0; }
+
+
 .flaker_c_form {width:100%;  margin:0; padding:0; border:none; font-family: sans-serif; font-size: 10pt; background-color:#fff;}
 
 iframe.flaker_c_form { overflow:hidden; display:none; min-height: 200px; height: 220px; }
 
+
 .flaker_c_form form {width:100%; float:left; background-color: #f6f6f6;}
 .flaker_c_form form fieldset {width:90%; border:none; float:left; }
-.flaker_c_form form legend {width:100%;float:left; }
+.flaker_c_form form legend {width:100%;float:left; margin: 5px 0 5px 0; display:block; }
 .flaker_c_form form legend a.button { text-decoration: none; color:#000; }
-.flaker_c_form form textarea {width: 100%;float:left; margin-top: 10px;}
+.flaker_c_form form legend img { vertical-align:middle; }
+
+.flaker_c_form form textarea {width: 100%; height: 100px; float:left; margin-top: 10px; border-left:1px solid #888; border-top:1px solid #888; border-right:1px solid #eaeaea; border-bottom:1px solid #eaeaea; padding: 2px; background:#fff url("../../images/textarea_bg.gif") repeat-x;}
+
 .flaker_c_form form .formPart { float:left; width: 100%; }
 .flaker_c_form form .formPart input { width: 100%; }
 .flaker_c_form form .formSubmit {  float:left; width: 100%;  }
@@ -195,7 +216,7 @@ iframe.flaker_c_form { overflow:hidden; display:none; min-height: 200px; height:
 #anonymous {width: 100%; height: auto; float:left; display:none; }
 #anonymous .formPart { width: 50%; }
 
-
+#layout-editor .flaker_widget {display:none;}
 
 .flaker_c_form .rightcol label {margin-left: 5px;}
 .flaker_c_form .rightcol input {margin-left: 5px;}
